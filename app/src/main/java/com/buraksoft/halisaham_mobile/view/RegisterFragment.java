@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.buraksoft.halisaham_mobile.databinding.FragmentRegisterBinding;
 import com.buraksoft.halisaham_mobile.service.request.RegisterRequest;
+import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 import com.buraksoft.halisaham_mobile.viewmodel.AuthenticationViewModel;
 
 
@@ -71,6 +72,11 @@ public class RegisterFragment extends Fragment {
                 request.setPassword(binding.passwordText.getText().toString());
 
                 viewModel.register(request);
+
+                if (viewModel.getTokenData() != null && viewModel.getTokenData().getValue().getToken() != null){
+                    TokenContextHolder.setToken(viewModel.getTokenData().getValue().getToken());
+                }
+
             }else{
                 binding.informationText.setText("ONAYLAMAMISIN");
             }

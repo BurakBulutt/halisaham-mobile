@@ -9,6 +9,9 @@ import com.buraksoft.halisaham_mobile.model.TokenModel;
 import com.buraksoft.halisaham_mobile.service.AuthServiceAPI;
 import com.buraksoft.halisaham_mobile.service.request.LoginRequest;
 import com.buraksoft.halisaham_mobile.service.request.RegisterRequest;
+import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
+
+import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -61,6 +64,7 @@ public class AuthenticationViewModel extends ViewModel {
                             public void onSuccess(Respond<TokenModel> tokenModelRespond) {
                                 if (tokenModelRespond.getMeta().getCode() == 200){
                                     tokenData.postValue(tokenModelRespond.getData());
+                                    TokenContextHolder.setToken(tokenModelRespond.getData().getToken());
                                     error.postValue(Boolean.FALSE);
                                     loading.postValue(Boolean.FALSE);
                                 }else{
