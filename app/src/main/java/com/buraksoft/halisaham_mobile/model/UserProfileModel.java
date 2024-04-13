@@ -1,17 +1,13 @@
 package com.buraksoft.halisaham_mobile.model;
 
+import android.util.Base64;
+
 public class UserProfileModel {
     private String id;
-    private UserModel userModel;
-    private byte[] photo;
+    private UserModel user;
+    private String photo;
 
     public UserProfileModel() {
-    }
-
-    public UserProfileModel(String id, UserModel userModel, byte[] photo) {
-        this.id = id;
-        this.userModel = userModel;
-        this.photo = photo;
     }
 
     public String getId() {
@@ -23,18 +19,18 @@ public class UserProfileModel {
     }
 
     public UserModel getUserModel() {
-        return userModel;
+        return user;
     }
 
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
+    public void setUserModel(UserModel user) {
+        this.user = user;
     }
 
     public byte[] getPhoto() {
-        return photo;
+        return photo != null ? Base64.decode(photo, Base64.DEFAULT) : null;
     }
 
     public void setPhoto(byte[] photo) {
-        this.photo = photo;
+        this.photo = Base64.encodeToString(photo, Base64.DEFAULT);
     }
 }

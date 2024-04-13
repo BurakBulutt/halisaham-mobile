@@ -1,5 +1,7 @@
 package com.buraksoft.halisaham_mobile.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,9 +13,11 @@ import com.buraksoft.halisaham_mobile.service.AuthServiceAPI;
 import com.buraksoft.halisaham_mobile.service.UserProfileServiceAPI;
 import com.buraksoft.halisaham_mobile.service.request.LoginRequest;
 import com.buraksoft.halisaham_mobile.service.request.RegisterRequest;
+import com.buraksoft.halisaham_mobile.service.request.UserProfileRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
 import java.util.Objects;
+import java.util.logging.LogManager;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -87,7 +91,7 @@ public class AuthenticationViewModel extends ViewModel {
         );
     }
 
-    public void getUserProfile(String token) {
+    public void setUserProfile(String token) {
         loading.setValue(Boolean.TRUE);
         disposable.add(
                 userProfileServiceAPI.getUserProfile(token)
@@ -99,7 +103,7 @@ public class AuthenticationViewModel extends ViewModel {
                                 if (userProfileModelRespond.getMeta().getCode() == 200) {
                                     userProfile.postValue(userProfileModelRespond.getData());
                                     loading.postValue(Boolean.FALSE);
-                                    loading.postValue(Boolean.TRUE);
+                                    error.postValue(Boolean.FALSE);
                                 } else {
                                     loading.postValue(Boolean.FALSE);
                                     error.postValue(Boolean.TRUE);
@@ -108,7 +112,35 @@ public class AuthenticationViewModel extends ViewModel {
 
                             @Override
                             public void onError(Throwable e) {
+                                Log.e("PROFILE_ERROR", Objects.requireNonNull(e.getLocalizedMessage()));
                                 loading.postValue(Boolean.FALSE); //TODO Bütün onError() caseleri düzenlenecek.
+                                error.postValue(Boolean.TRUE);
+                            }
+                        })
+        );
+    }
+
+    public void updateProfilePhoto(String id,UserProfileRequest request){
+        loading.setValue(Boolean.TRUE);
+        disposable.add(
+                userProfileServiceAPI.updateUserProfile(id,request)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Respond<UserProfileModel>>() {
+                            @Override
+                            public void onSuccess(Respond<UserProfileModel> userProfileModelRespond) {
+                                if (userProfileModelRespond.getMeta().getCode() == 200){
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.FALSE);
+                                }else {
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.TRUE);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                loading.postValue(Boolean.FALSE);
                                 error.postValue(Boolean.TRUE);
                             }
                         })

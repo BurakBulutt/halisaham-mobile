@@ -10,13 +10,13 @@
     <ImageView
         android:id="@+id/profilePhoto"
         android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="50dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toTopOf="@+id/profileLinear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/istockphoto_1300845620_612x612" />
+        android:src="@drawable/png_clipart_user_profile_computer_icons_login_user_avatars_monochrome_black_thumbnail" />
 
     <LinearLayout
         android:id="@+id/profileLinear"
@@ -27,7 +27,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profilePhoto"
-        app:layout_constraintBottom_toTopOf="@+id/changePasswordButton"
         tools:layout_editor_absoluteX="24dp"
         tools:layout_editor_absoluteY="231dp">
 
@@ -65,34 +64,31 @@
             android:id="@+id/passwordText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:ems="10"
             android:enabled="false"
             android:hint="Şifre"
             android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/changePasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Şifre Değiştir"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Çıkış Yap"
+            android:layout_gravity="center"/>
+
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Çıkış Yap"
-        app:layout_constraintTop_toBottomOf="@+id/changePasswordButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="575dp" />
 
-    <Button
-        android:id="@+id/changePasswordButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Şifre Değiştir"
-        app:layout_constraintTop_toBottomOf="@+id/profileLinear"
-        app:layout_constraintBottom_toTopOf="@+id/logoutButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="502dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

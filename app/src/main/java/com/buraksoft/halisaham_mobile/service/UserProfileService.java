@@ -16,6 +16,6 @@ public interface UserProfileService {
     Single<Respond<UserProfileModel>> getUserProfile(@Query("token") String token);
 
     @PUT("{id}")
-    Single<Respond<UserProfileModel>> updateProfile(@Path("name") String id, @Body UserProfileRequest request); //TODO request düzenlenecek
+    Single<Respond<UserProfileModel>> updateProfile(@Path("id") String id, @Body UserProfileRequest request); //TODO request düzenlenecek
 
 }

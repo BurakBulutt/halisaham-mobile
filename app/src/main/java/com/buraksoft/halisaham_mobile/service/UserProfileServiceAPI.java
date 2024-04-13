@@ -2,6 +2,7 @@ package com.buraksoft.halisaham_mobile.service;
 
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.UserProfileModel;
+import com.buraksoft.halisaham_mobile.service.request.UserProfileRequest;
 
 import io.reactivex.Single;
 import retrofit2.Retrofit;
@@ -30,5 +31,8 @@ public class UserProfileServiceAPI {
         return api.getUserProfile(token);
     }
 
-    //TODO PROFILE DUZENLEME ISTEGI
+    public Single<Respond<UserProfileModel>> updateUserProfile(String id, UserProfileRequest request){
+        return api.updateProfile(id,request);
+    }
+
 }

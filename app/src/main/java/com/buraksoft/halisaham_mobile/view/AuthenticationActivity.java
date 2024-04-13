@@ -41,7 +41,7 @@ public class AuthenticationActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        navController = Navigation.findNavController(this,R.id.fragmentContainerView);
+        navController = Navigation.findNavController(this,R.id.authFragmentContainerView);
         inflater = navController.getNavInflater();
         graph = inflater.inflate(R.navigation.auth_graph);
         checkToken();
