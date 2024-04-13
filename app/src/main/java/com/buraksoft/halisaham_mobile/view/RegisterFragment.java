@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 import com.buraksoft.halisaham_mobile.databinding.FragmentRegisterBinding;
@@ -99,7 +100,7 @@ public class RegisterFragment extends Fragment {
 
         viewModel.getError().observe(getViewLifecycleOwner(),error -> {
             if (error){
-                binding.informationText.setText("KAYIT BASARISIZ");
+                Toast.makeText(requireContext(),"KAYIT BASARISIZ",Toast.LENGTH_LONG).show();
             }
         });
 

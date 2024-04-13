@@ -29,7 +29,7 @@ public class LoginFragment extends Fragment {
     private AuthenticationViewModel viewModel;
     private ProgressDialog progressDialog;
 
-    public static LoginFragment newInstance(String param1, String param2) {
+    public static LoginFragment newInstance() {
         return new LoginFragment();
     }
 

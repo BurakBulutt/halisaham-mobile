@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.TokenModel;
+import com.buraksoft.halisaham_mobile.model.UserProfileModel;
 import com.buraksoft.halisaham_mobile.service.AuthServiceAPI;
+import com.buraksoft.halisaham_mobile.service.UserProfileServiceAPI;
 import com.buraksoft.halisaham_mobile.service.request.LoginRequest;
 import com.buraksoft.halisaham_mobile.service.request.RegisterRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
@@ -19,19 +21,21 @@ import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class AuthenticationViewModel extends ViewModel {
-    private AuthServiceAPI authServiceAPI = new AuthServiceAPI();
-    private CompositeDisposable disposable = new CompositeDisposable();
+    private final AuthServiceAPI authServiceAPI = new AuthServiceAPI();
+    private final UserProfileServiceAPI userProfileServiceAPI = new UserProfileServiceAPI();
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     MutableLiveData<TokenModel> tokenData = new MutableLiveData<>();
     MutableLiveData<Boolean> loading = new MutableLiveData<>();
     MutableLiveData<Boolean> error = new MutableLiveData<>();
+    MutableLiveData<UserProfileModel> userProfile = new MutableLiveData<>();
 
 
     public AuthenticationViewModel() {
     }
 
 
-    public void register(RegisterRequest request){
+    public void register(RegisterRequest request) {
         loading.setValue(Boolean.TRUE);
         disposable.add(
                 authServiceAPI.register(request)
@@ -53,7 +57,7 @@ public class AuthenticationViewModel extends ViewModel {
         );
     }
 
-    public void login(LoginRequest request){
+    public void login(LoginRequest request) {
         loading.setValue(Boolean.TRUE);
         disposable.add(
                 authServiceAPI.login(request)
@@ -62,12 +66,12 @@ public class AuthenticationViewModel extends ViewModel {
                         .subscribeWith(new DisposableSingleObserver<Respond<TokenModel>>() {
                             @Override
                             public void onSuccess(Respond<TokenModel> tokenModelRespond) {
-                                if (tokenModelRespond.getMeta().getCode() == 200){
+                                if (tokenModelRespond.getMeta().getCode() == 200) {
                                     tokenData.postValue(tokenModelRespond.getData());
                                     TokenContextHolder.setToken(tokenModelRespond.getData().getToken());
                                     error.postValue(Boolean.FALSE);
                                     loading.postValue(Boolean.FALSE);
-                                }else{
+                                } else {
                                     loading.postValue(Boolean.FALSE);
                                     error.postValue(Boolean.TRUE);
                                 }
@@ -83,16 +87,48 @@ public class AuthenticationViewModel extends ViewModel {
         );
     }
 
-    public LiveData<Boolean> getLoading(){
+    public void getUserProfile(String token) {
+        loading.setValue(Boolean.TRUE);
+        disposable.add(
+                userProfileServiceAPI.getUserProfile(token)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Respond<UserProfileModel>>() {
+                            @Override
+                            public void onSuccess(Respond<UserProfileModel> userProfileModelRespond) {
+                                if (userProfileModelRespond.getMeta().getCode() == 200) {
+                                    userProfile.postValue(userProfileModelRespond.getData());
+                                    loading.postValue(Boolean.FALSE);
+                                    loading.postValue(Boolean.TRUE);
+                                } else {
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.TRUE);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                loading.postValue(Boolean.FALSE); //TODO Bütün onError() caseleri düzenlenecek.
+                                error.postValue(Boolean.TRUE);
+                            }
+                        })
+        );
+    }
+
+    public LiveData<Boolean> getLoading() {
         return loading;
     }
-    public LiveData<Boolean> getError(){
+
+    public LiveData<Boolean> getError() {
         return error;
     }
-    public LiveData<TokenModel> getTokenData(){
+
+    public LiveData<TokenModel> getTokenData() {
         return tokenData;
     }
 
-
+    public LiveData<UserProfileModel> getUserProfile() {
+        return userProfile;
+    }
 }
 
