@@ -1,24 +1,19 @@
 package com.buraksoft.halisaham_mobile.view;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
 import androidx.navigation.Navigation;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.R;
 import com.buraksoft.halisaham_mobile.databinding.ActivityAuthenticationBinding;
 import com.buraksoft.halisaham_mobile.databinding.LayoutMenuImagesBinding;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
-import com.buraksoft.halisaham_mobile.viewmodel.AuthenticationViewModel;
 
 public class AuthenticationActivity extends AppCompatActivity {
     private ActivityAuthenticationBinding binding;

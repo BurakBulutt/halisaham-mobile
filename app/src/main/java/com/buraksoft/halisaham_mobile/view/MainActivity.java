@@ -35,17 +35,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-       /* menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
+        menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                Intent intent = new Intent(MainActivity.this, EventActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
-        */
+
 
     }
 

@@ -3,6 +3,7 @@ package com.buraksoft.halisaham_mobile.service;
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.UserProfileModel;
 import com.buraksoft.halisaham_mobile.service.request.UserProfileRequest;
+import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
 import io.reactivex.Single;
 import retrofit2.Retrofit;
@@ -28,11 +29,13 @@ public class UserProfileServiceAPI {
     }
 
     public Single<Respond<UserProfileModel>> getUserProfile(String token){
-        return api.getUserProfile(token);
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.getUserProfile(token,jwt);
     }
 
     public Single<Respond<UserProfileModel>> updateUserProfile(String id, UserProfileRequest request){
-        return api.updateProfile(id,request);
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.updateProfile(id,request,jwt);
     }
 
 }

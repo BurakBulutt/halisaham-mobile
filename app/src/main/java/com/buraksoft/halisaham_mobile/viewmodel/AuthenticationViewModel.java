@@ -1,6 +1,5 @@
 package com.buraksoft.halisaham_mobile.viewmodel;
 
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,13 +15,11 @@ import com.buraksoft.halisaham_mobile.service.request.RegisterRequest;
 import com.buraksoft.halisaham_mobile.service.request.UserProfileRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
-import java.util.Objects;
-import java.util.logging.LogManager;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
 public class AuthenticationViewModel extends ViewModel {
     private final AuthServiceAPI authServiceAPI = new AuthServiceAPI();
@@ -38,7 +35,6 @@ public class AuthenticationViewModel extends ViewModel {
     public AuthenticationViewModel() {
     }
 
-
     public void register(RegisterRequest request) {
         loading.setValue(Boolean.TRUE);
         disposable.add(
@@ -50,6 +46,7 @@ public class AuthenticationViewModel extends ViewModel {
                             public void onSuccess(Respond<TokenModel> tokenModelRespond) {
                                 tokenData.postValue(tokenModelRespond.getData());
                                 loading.postValue(Boolean.FALSE);
+                                error.postValue(Boolean.FALSE);
                             }
 
                             @Override
@@ -84,8 +81,8 @@ public class AuthenticationViewModel extends ViewModel {
 
                             @Override
                             public void onError(Throwable e) {
-                                error.postValue(Boolean.TRUE);
                                 loading.postValue(Boolean.FALSE);
+                                error.postValue(Boolean.TRUE);
                             }
                         })
         );
@@ -112,9 +109,16 @@ public class AuthenticationViewModel extends ViewModel {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("PROFILE_ERROR", Objects.requireNonNull(e.getLocalizedMessage()));
                                 loading.postValue(Boolean.FALSE); //TODO Bütün onError() caseleri düzenlenecek.
-                                error.postValue(Boolean.TRUE);
+
+                                if (e instanceof HttpException){
+                                    HttpException httpException = (HttpException) e;
+                                    int statusCode = httpException.code();
+
+                                    if (statusCode == 403){
+                                        error.postValue(Boolean.TRUE);
+                                    }
+                                }
                             }
                         })
         );

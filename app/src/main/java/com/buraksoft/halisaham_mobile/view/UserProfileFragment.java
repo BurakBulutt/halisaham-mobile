@@ -3,7 +3,6 @@ package com.buraksoft.halisaham_mobile.view;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,7 +27,6 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.R;
@@ -41,7 +39,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 
@@ -119,6 +116,10 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void logout(View view) {
+        directLoginFragment();
+    }
+
+    private void directLoginFragment(){
         NavController navController = Navigation.findNavController(requireActivity(),R.id.authFragmentContainerView);
         TokenContextHolder.setToken(null);
         NavDirections directions = UserProfileFragmentDirections.actionUserProfileFragmentToLoginFragment();
@@ -176,6 +177,7 @@ public class UserProfileFragment extends Fragment {
         viewModel.getError().observe(getViewLifecycleOwner(),error -> {
             if (error){
                 Toast.makeText(requireContext(),"PROFIL GETIRILEMEDI",Toast.LENGTH_LONG).show();
+                directLoginFragment();
             }
         });
 

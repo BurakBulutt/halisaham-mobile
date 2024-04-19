@@ -74,10 +74,6 @@ public class RegisterFragment extends Fragment {
 
                 viewModel.register(request);
 
-                if (viewModel.getTokenData() != null && viewModel.getTokenData().getValue().getToken() != null){
-                    TokenContextHolder.setToken(viewModel.getTokenData().getValue().getToken());
-                }
-
             }else{
                 binding.informationText.setText("ONAYLAMAMISIN");
             }
