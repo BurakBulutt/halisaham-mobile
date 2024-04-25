@@ -120,10 +120,10 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void directLoginFragment(){
-        NavController navController = Navigation.findNavController(requireActivity(),R.id.authFragmentContainerView);
         TokenContextHolder.setToken(null);
-        NavDirections directions = UserProfileFragmentDirections.actionUserProfileFragmentToLoginFragment();
-        navController.navigate(directions);
+        Intent i = new Intent(requireContext(), MainActivity.class);
+        requireActivity().startActivity(i);
+        requireActivity().finish();
     }
 
     private void getProfile(){

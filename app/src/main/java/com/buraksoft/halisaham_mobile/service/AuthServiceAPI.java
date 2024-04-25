@@ -20,6 +20,22 @@ public class AuthServiceAPI {
     }
 
     private void initRetrofit() {
+    /*    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @NotNull
+                    @Override
+                    public Response intercept(@NotNull Chain chain) throws IOException {
+                        Request originalRequest = chain.request();
+
+                        Request.Builder builder = originalRequest.newBuilder()
+                                .header("Authorization", "Your Token"); // Buraya tokeninizi ekleyin
+
+                        Request newRequest = builder.build();
+                        return chain.proceed(newRequest);
+                    }
+                })
+                .build();
+     */
         api = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
