@@ -27,6 +27,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.R;
@@ -101,6 +102,7 @@ public class UserProfileFragment extends Fragment {
             if (result.getResultCode() == RESULT_OK){
                 Uri dataUri = Objects.requireNonNull(result.getData()).getData();
                 binding.profilePhoto.setImageURI(dataUri);
+                binding.profilePhoto.setVisibility(View.INVISIBLE);
                 updateProfilePhoto();
             }
         });
@@ -134,6 +136,9 @@ public class UserProfileFragment extends Fragment {
         BitmapDrawable drawable = (BitmapDrawable) binding.profilePhoto.getDrawable();
         Bitmap bitmap = makeSmallerImage(drawable.getBitmap(),400);
 
+        binding.profilePhoto.setImageBitmap(bitmap);
+        binding.profilePhoto.setVisibility(View.VISIBLE);
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,95,stream);
         byte [] photoBytes = stream.toByteArray();
@@ -144,21 +149,15 @@ public class UserProfileFragment extends Fragment {
     }
 
     private Bitmap makeSmallerImage(Bitmap bitmap,int maxSize){
-        int widht = bitmap.getWidth();
-        int height = bitmap.getHeight();
+        float scaleRatio = (float) maxSize / bitmap.getHeight();
+        int newWidth = Math.round(bitmap.getWidth() * scaleRatio);
+        int newHeight = Math.round(bitmap.getHeight() * scaleRatio);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
 
-        float ratio = (float) widht / (float) height;
-        if (ratio > 1){
-            widht = maxSize;
-            height = (int) (widht / ratio);
-        }else if (ratio == 1){
-            widht = maxSize;
-            height = maxSize;
-        }else{
-            height = maxSize;
-            widht = (int) (height * ratio);
-        }
-        return Bitmap.createScaledBitmap(bitmap,widht,height,true);
+        int portraitWidth = Math.min(scaledBitmap.getWidth(), scaledBitmap.getHeight());
+        int offsetX = (scaledBitmap.getWidth() - portraitWidth) / 2;
+
+        return Bitmap.createBitmap(scaledBitmap, offsetX, 0, portraitWidth, scaledBitmap.getHeight());
     }
 
     private void observeDatas(){

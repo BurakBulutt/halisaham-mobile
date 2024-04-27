@@ -52,7 +52,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             }
         });
 
-        /*menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
+        /* menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO
@@ -61,7 +61,6 @@ public class AuthenticationActivity extends AppCompatActivity {
                 finish();
             }
         });
-
          */
     }
 

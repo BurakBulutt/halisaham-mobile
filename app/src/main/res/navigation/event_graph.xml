@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/event_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/event_graph"
+    app:startDestination="@id/eventListFragment">
 
+    <fragment
+        android:id="@+id/eventChatFragment"
+        android:name="com.buraksoft.halisaham_mobile.view.EventChatFragment"
+        android:label="fragment_event_chat"
+        tools:layout="@layout/fragment_event_chat" />
+    <fragment
+        android:id="@+id/eventListFragment"
+        android:name="com.buraksoft.halisaham_mobile.view.EventListFragment"
+        android:label="fragment_event_list"
+        tools:layout="@layout/fragment_event_list" >
+        <action
+            android:id="@+id/action_eventListFragment_to_eventChatFragment"
+            app:destination="@id/eventChatFragment" />
+    </fragment>
 </navigation>

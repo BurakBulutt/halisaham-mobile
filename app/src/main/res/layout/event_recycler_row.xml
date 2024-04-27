@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
 
@@ -12,26 +12,15 @@
         android:layout_height="wrap_content">
 
 
-        <ImageView
-            android:id="@+id/eventImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
-            tools:srcCompat="@tools:sample/avatars"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
         <TextView
             android:id="@+id/eventName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Example Event"
             android:textSize="18dp"
-            app:layout_constraintStart_toEndOf="@+id/eventImage"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/eventBall"
-            android:layout_marginTop="10dp"
+            android:layout_margin="10dp"
             />
 
         <TextView
@@ -39,10 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Example Date"
-            app:layout_constraintStart_toEndOf="@+id/eventImage"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/eventName"
-            app:layout_constraintEnd_toStartOf="@+id/eventBall"
-            android:layout_marginTop="10dp"
+            android:layout_margin="10dp"
             />
 
         <ImageView
@@ -53,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/png_transparent_ball_drawing_green_ball_sport_grass_sporting_goods" />
+            android:src="@drawable/png_transparent_ball_drawing_green_ball_sport_grass_sporting_goods" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
