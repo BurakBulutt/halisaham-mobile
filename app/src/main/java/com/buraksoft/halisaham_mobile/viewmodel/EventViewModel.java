@@ -14,6 +14,7 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class EventViewModel extends ViewModel {
@@ -50,7 +51,7 @@ public class EventViewModel extends ViewModel {
                             @Override
                             public void onComplete() {
                                 loading.postValue(Boolean.FALSE);
-                                loading.postValue(Boolean.FALSE);
+                                error.postValue(Boolean.TRUE);
                             }
                         })
         );

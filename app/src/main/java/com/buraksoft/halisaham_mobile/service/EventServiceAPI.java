@@ -36,6 +36,10 @@ public class EventServiceAPI {
         return api.getUserEvents(jwt);
     }
 
+    public Single<Respond<DataResponse<EventModel>>> getAll(){
+        return api.getAll();
+    }
+
     public Single<EventModel> createEvent(EventRequest request){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
         return api.createEvent(request,jwt);

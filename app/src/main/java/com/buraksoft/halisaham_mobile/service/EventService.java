@@ -19,8 +19,11 @@ import retrofit2.http.Query;
 public interface EventService {
     String AUTHORIZATION = "Authorization";
 
-    @GET
+    @GET("user-events")
     Observable<Respond<DataResponse<EventModel>>> getUserEvents(@Header(AUTHORIZATION) String jwt);
+
+    @GET("")
+    Single<Respond<DataResponse<EventModel>>> getAll();
 
     @POST
     Single<EventModel> createEvent(@Body EventRequest request,@Header(AUTHORIZATION) String jwt);

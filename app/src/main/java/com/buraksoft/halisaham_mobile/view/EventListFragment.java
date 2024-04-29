@@ -1,5 +1,7 @@
 package com.buraksoft.halisaham_mobile.view;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.R;
 import com.buraksoft.halisaham_mobile.databinding.FragmentEventListBinding;
@@ -23,10 +26,12 @@ import com.buraksoft.halisaham_mobile.viewmodel.EventViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class EventListFragment extends Fragment {
     private FragmentEventListBinding binding;
     private EventViewModel viewModel;
+    private ProgressDialog progressDialog;
 
     public EventListFragment() {
 
@@ -54,15 +59,34 @@ public class EventListFragment extends Fragment {
         getUserEvents();
         observeDatas();
         binding.eventRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.eventRecyclerView.setAdapter(new EventRecyclerAdapter(viewModel.getEventData().getValue()));
     }
 
     public void getUserEvents(){
-
+        viewModel.getUserEvents();
     }
 
     public void observeDatas(){
+        viewModel.getLoading().observe(getViewLifecycleOwner(),isLoading -> {
+            if (isLoading){
+                progressDialog = new ProgressDialog(requireContext());
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+            }else{
+                if (progressDialog != null){
+                    progressDialog.dismiss();
+                }
+            }
+        });
 
+        viewModel.getError().observe(getViewLifecycleOwner(),error -> {
+            if (error){
+                Toast.makeText(requireContext(),"EVENTLER GETIRILEMEDI",Toast.LENGTH_LONG).show();
+                Intent i = new Intent(requireContext(),MainActivity.class);
+                requireActivity().startActivity(i);
+            }else{
+                binding.eventRecyclerView.setAdapter(new EventRecyclerAdapter(Objects.requireNonNull(viewModel.getEventData().getValue())));
+            }
+        });
     }
 
 }
