@@ -37,7 +37,7 @@ public class EventViewModel extends ViewModel {
                             public void onNext(Respond<DataResponse<EventModel>> eventModelRespond) {
                                 if (eventModelRespond.getMeta().getCode() == 200){
                                     eventData.setValue(eventModelRespond.getData().getItems());
-                                    error.setValue(Boolean.FALSE);
+                                    error.setValue(Boolean.FALSE); //TODO ERROR CASELERINDE META RESPONSELAR DINLENECEK! LIVEDATA
                                 }else {
                                     error.setValue(Boolean.TRUE);
                                 }
