@@ -40,7 +40,7 @@ public class EventServiceAPI {
         return api.getAll();
     }
 
-    public Single<EventModel> createEvent(EventRequest request){
+    public Single<Respond<EventModel>> createEvent(EventRequest request){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
         return api.createEvent(request,jwt);
     }

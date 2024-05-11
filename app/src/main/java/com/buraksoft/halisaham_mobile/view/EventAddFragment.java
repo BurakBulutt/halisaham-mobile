@@ -1,5 +1,10 @@
 package com.buraksoft.halisaham_mobile.view;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,15 +19,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.buraksoft.halisaham_mobile.R;
 import com.buraksoft.halisaham_mobile.databinding.FragmentEventAddBinding;
 import com.buraksoft.halisaham_mobile.model.AreaModel;
 import com.buraksoft.halisaham_mobile.model.CityModel;
 import com.buraksoft.halisaham_mobile.model.DistrictModel;
 import com.buraksoft.halisaham_mobile.model.StreetModel;
+import com.buraksoft.halisaham_mobile.service.request.EventRequest;
 import com.buraksoft.halisaham_mobile.viewmodel.EventViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,9 +43,10 @@ import java.util.stream.Collectors;
 
 
 public class EventAddFragment extends Fragment {
+    private final EventRequest request = new EventRequest();
     private FragmentEventAddBinding binding;
     private EventViewModel viewModel;
-    private MutableLiveData<byte[]> imageData = new MutableLiveData<>();
+    private Integer peopleCount;
 
     public EventAddFragment() {
     }
@@ -56,8 +70,37 @@ public class EventAddFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        binding.dateText.setOnClickListener(this::dateListener);
+        binding.button.setOnClickListener(this::save);
         getCities();
         observeDatas();
+    }
+
+    private void save(View view) {
+        request.setTitle(binding.titleText.getText().toString());
+        request.setDescription(binding.descriptionText.getText().toString());
+    //    request.setExpirationDate(binding.dateText.getText()); //TODO Date düzenlencek
+
+        request.setExpirationDate(null);
+
+        viewModel.saveEvent(request);
+    }
+
+    private void dateListener(View view) {
+
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                binding.dateText.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+            }
+        }, year, month, day);
+
+        dialog.show();
     }
 
     public void getCities() {
@@ -91,6 +134,7 @@ public class EventAddFragment extends Fragment {
                     binding.areaSpinner.setEnabled(Boolean.FALSE);
                 } else {
                     binding.districtSpinner.setEnabled(Boolean.TRUE);
+                    request.setCityId(cityModelList.get(position - 1).getId());
                     initDistrict(cityModelList.get(position - 1));
                 }
             }
@@ -100,6 +144,31 @@ public class EventAddFragment extends Fragment {
                 binding.districtSpinner.setEnabled(Boolean.FALSE);
                 binding.streetSpinner.setEnabled(Boolean.FALSE);
                 binding.areaSpinner.setEnabled(Boolean.FALSE);
+            }
+        });
+
+        final List<Integer> peopleCount = new ArrayList<>();
+
+        for (int i = 1; i <= 22; i++) {
+            peopleCount.add(i);
+        }
+
+        ArrayAdapter<Integer> countAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, peopleCount);
+
+        binding.countSpinner.setAdapter(countAdapter);
+        binding.countSpinner.setDropDownVerticalOffset(100);
+
+        binding.countSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                setPeopleCount(peopleCount.get(position));
+                request.setMaxPeople(getPeopleCount());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                setPeopleCount(peopleCount.get(0));
+                request.setMaxPeople(getPeopleCount());
             }
         });
     }
@@ -127,6 +196,7 @@ public class EventAddFragment extends Fragment {
                     binding.areaSpinner.setEnabled(Boolean.FALSE);
                 } else {
                     binding.streetSpinner.setEnabled(Boolean.TRUE);
+                    request.setDistrictId(districtModelList.get(position - 1).getId());
                     initStreet(districtModelList.get(position - 1));
                 }
 
@@ -164,13 +234,14 @@ public class EventAddFragment extends Fragment {
                             .filter(streetModel1 -> streetModel1.getName().equals(streetNames.get(position)))
                             .findFirst();
 
-                    if (!streetModel.isPresent()){
-                        Toast.makeText(requireContext(),"MAHALLE BULUNAMADI",Toast.LENGTH_LONG).show();
+                    if (!streetModel.isPresent()) {
+                        Toast.makeText(requireContext(), "MAHALLE BULUNAMADI", Toast.LENGTH_LONG).show();
                         binding.areaSpinner.setSelection(0);
                         binding.areaSpinner.setEnabled(Boolean.FALSE);
                         return;
                     }
                     binding.areaSpinner.setEnabled(Boolean.TRUE);
+                    request.setStreetId(streetModel.get().getId());
                     viewModel.getAreaByDistrictAndStreet(streetModel.get().getDistrictId(), streetModel.get().getId());
                 }
             }
@@ -197,26 +268,28 @@ public class EventAddFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    //TODO RESIM SIFIRLA
-                }else {
+                    binding.imageView.setImageResource(R.drawable._60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x);
+                } else {
                     Optional<AreaModel> areaModel = areaModelList.stream()
                             .filter(areaModel1 -> areaModel1.getName().equals(areaNames.get(position)))
                             .findFirst();
 
-                    if (!areaModel.isPresent()){
-
+                    if (!areaModel.isPresent()) {
+                        return;
                     }
 
-
+                    request.setAreaId(areaModel.get().getId());
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(areaModel.get().getPhoto(), 0, areaModel.get().getPhoto().length);
+                    binding.imageView.setImageBitmap(bitmap);
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
     }
+
 
     public void observeDatas() {
         viewModel.getCityData().observe(getViewLifecycleOwner(), cityModels -> {
@@ -231,14 +304,23 @@ public class EventAddFragment extends Fragment {
             }
         });
 
-        getImageData().observe(getViewLifecycleOwner(), imageData -> {
-
+        viewModel.getError().observe(getViewLifecycleOwner(),error -> {
+            if (error){
+                Intent i = new Intent(requireContext(), MainActivity.class);
+                requireActivity().startActivity(i);
+                requireActivity().finish();
+            }
         });
+
     }
 
 
-    public LiveData<byte[]> getImageData() {
-        return imageData;
+
+    public Integer getPeopleCount() {
+        return peopleCount;
     }
 
+    public void setPeopleCount(Integer peopleCount) {
+        this.peopleCount = peopleCount;
+    }
 }

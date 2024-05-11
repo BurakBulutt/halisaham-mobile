@@ -28,7 +28,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         holder.binding.eventName.setText(events.get(position).getTitle());
-        holder.binding.eventExpirationDate.setText(events.get(position).getExpirationDate().toString());
+    //    holder.binding.eventExpirationDate.setText(events.get(position).getExpirationDate().toString()); //TODO DATE DÜZELTİLİNCE AKTİF EDİLCEK.
     }
 
     @Override
@@ -36,8 +36,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         return events.size();
     }
 
-    public
-    class Holder extends RecyclerView.ViewHolder{
+    public class Holder extends RecyclerView.ViewHolder{
         private EventRecyclerRowBinding binding;
         public Holder(@NonNull EventRecyclerRowBinding binding) {
             super(binding.getRoot());

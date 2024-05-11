@@ -52,16 +52,16 @@ public class AuthenticationActivity extends AppCompatActivity {
             }
         });
 
-        /* menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
+        menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO
-                Intent intent = new Intent(AuthenticationActivity.this, AuthenticationActivity.class);
+                Intent intent = new Intent(AuthenticationActivity.this, EventActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
-         */
+
     }
 
     public void checkToken(){

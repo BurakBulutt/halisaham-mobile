@@ -6,16 +6,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.EventListFragment">
 
-    <TextView
-        android:id="@+id/eventText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Eventler"
-        android:textSize="30dp"
-        tools:ignore="UnusedResources"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#006400">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Maçlarım"
+            android:textSize="20dp"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_input_add"
+            app:tint="@color/white"
+            android:layout_gravity="right"
+            android:layout_margin="5dp"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/eventRecyclerView"
@@ -24,7 +42,7 @@
         android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventText"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 

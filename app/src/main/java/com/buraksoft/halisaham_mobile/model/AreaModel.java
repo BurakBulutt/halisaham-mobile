@@ -3,8 +3,13 @@ package com.buraksoft.halisaham_mobile.model;
 import android.util.Base64;
 
 public class AreaModel {
+    private String id;
     private String name;
     private String photo;
+
+    public String getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

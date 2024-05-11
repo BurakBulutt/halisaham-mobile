@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/messi_cool_hw5gwrkamjlbownt"
     tools:context=".view.MainActivity">
 
     <include
         android:id="@+id/layoutMenuImages"
-        layout="@layout/layout_menu_images"/>
+        layout="@layout/layout_menu_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

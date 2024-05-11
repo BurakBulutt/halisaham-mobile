@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/green"
-        app:popupTheme="@style/AppTheme.PopupOverlay" /> -->
+    <!--   <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+           <item name="android:actionBarStyle">@style/MyActionBar</item>
+           <item name="android:actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+           <item name="android:actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+       </style>
+
+
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#006400</item>
+        <item name="android:titleTextStyle">@style/MyTitleTextStyle</item>
+    </style>
+
+    <style name="MyTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    -->
 </resources>

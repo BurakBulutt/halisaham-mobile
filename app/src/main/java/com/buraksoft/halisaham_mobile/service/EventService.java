@@ -25,8 +25,8 @@ public interface EventService {
     @GET("")
     Single<Respond<DataResponse<EventModel>>> getAll();
 
-    @POST
-    Single<EventModel> createEvent(@Body EventRequest request,@Header(AUTHORIZATION) String jwt);
+    @POST("save")
+    Single<Respond<EventModel>> createEvent(@Body EventRequest request,@Header(AUTHORIZATION) String jwt);
 
     @POST
     Single<EventModel> joinEvent(@Query("eventId") String eventId,@Header(AUTHORIZATION) String jwt);

@@ -8,18 +8,28 @@
 
     <include
         android:id="@+id/layoutMenuImages"
-        layout="@layout/layout_menu_images"/>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/authFragmentContainerView"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+        layout="@layout/layout_menu_images"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/auth_graph"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@+id/layoutMenuImages">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/authFragmentContainerView"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/auth_graph" />
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

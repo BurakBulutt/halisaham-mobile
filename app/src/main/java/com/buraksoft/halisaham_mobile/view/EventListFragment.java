@@ -1,6 +1,8 @@
 package com.buraksoft.halisaham_mobile.view;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,22 +12,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.buraksoft.halisaham_mobile.R;
 import com.buraksoft.halisaham_mobile.databinding.FragmentEventListBinding;
 import com.buraksoft.halisaham_mobile.library.adapter.EventRecyclerAdapter;
-import com.buraksoft.halisaham_mobile.model.EventModel;
 import com.buraksoft.halisaham_mobile.viewmodel.EventViewModel;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
 import java.util.Objects;
 
 public class EventListFragment extends Fragment {
@@ -58,7 +60,14 @@ public class EventListFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
         getUserEvents();
         observeDatas();
+        binding.addButton.setOnClickListener(this::navAddEvent);
         binding.eventRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
+
+    private void navAddEvent(View view) {
+        NavController navController = Navigation.findNavController(requireView());
+        NavDirections navigateAddEvent = EventListFragmentDirections.actionEventListFragmentToEventAddFragment();
+        navController.navigate(navigateAddEvent);
     }
 
     public void getUserEvents(){
@@ -83,8 +92,30 @@ public class EventListFragment extends Fragment {
                 Toast.makeText(requireContext(),"EVENTLER GETIRILEMEDI",Toast.LENGTH_LONG).show();
                 Intent i = new Intent(requireContext(),MainActivity.class);
                 requireActivity().startActivity(i);
-            }else{
-                binding.eventRecyclerView.setAdapter(new EventRecyclerAdapter(Objects.requireNonNull(viewModel.getEventData().getValue())));
+            }
+        });
+
+        viewModel.getEventData().observe(getViewLifecycleOwner(),eventModels -> {
+            if (eventModels != null){
+                EventRecyclerAdapter adapterView = new EventRecyclerAdapter(Objects.requireNonNull(viewModel.getEventData().getValue()));
+                binding.eventRecyclerView.setAdapter(adapterView);
+            }
+        });
+
+        viewModel.getAuthError().observe(getViewLifecycleOwner(), authError -> {
+            if (authError){
+                new AlertDialog.Builder(requireContext())
+                        .setMessage("Lütfen Giriş Yapınız")
+                        .setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(requireContext(),AuthenticationActivity.class);
+                                requireActivity().startActivity(i);
+                                requireActivity().finish();
+                            }
+                        })
+                        .setCancelable(Boolean.FALSE)
+                        .show();
             }
         });
     }
