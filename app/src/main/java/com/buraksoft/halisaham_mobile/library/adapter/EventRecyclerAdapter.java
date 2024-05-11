@@ -1,5 +1,6 @@
 package com.buraksoft.halisaham_mobile.library.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -7,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.buraksoft.halisaham_mobile.databinding.EventRecyclerRowBinding;
+import com.buraksoft.halisaham_mobile.model.AreaModel;
 import com.buraksoft.halisaham_mobile.model.EventModel;
 
 import java.util.List;
@@ -14,9 +16,9 @@ import java.util.List;
 public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdapter.Holder> {
     private List<EventModel> events;
 
+
     public EventRecyclerAdapter(@NonNull List<EventModel> events) {
         this.events = events;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -31,13 +33,19 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     //    holder.binding.eventExpirationDate.setText(events.get(position).getExpirationDate().toString()); //TODO DATE DÜZELTİLİNCE AKTİF EDİLCEK.
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<EventModel> eventModelList){
+        this.events = eventModelList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return events.size();
     }
 
-    public class Holder extends RecyclerView.ViewHolder{
-        private EventRecyclerRowBinding binding;
+    public static class Holder extends RecyclerView.ViewHolder{
+        private final EventRecyclerRowBinding binding;
         public Holder(@NonNull EventRecyclerRowBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

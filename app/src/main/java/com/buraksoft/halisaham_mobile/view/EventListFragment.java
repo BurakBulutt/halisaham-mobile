@@ -28,12 +28,14 @@ import com.buraksoft.halisaham_mobile.library.adapter.EventRecyclerAdapter;
 import com.buraksoft.halisaham_mobile.viewmodel.EventViewModel;
 
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class EventListFragment extends Fragment {
     private FragmentEventListBinding binding;
     private EventViewModel viewModel;
     private ProgressDialog progressDialog;
+    private EventRecyclerAdapter adapterView;
 
     public EventListFragment() {
 
@@ -58,10 +60,12 @@ public class EventListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
-        getUserEvents();
-        observeDatas();
-        binding.addButton.setOnClickListener(this::navAddEvent);
         binding.eventRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapterView = new EventRecyclerAdapter(new ArrayList<>());
+        binding.eventRecyclerView.setAdapter(adapterView);
+        observeDatas();
+        getUserEvents();
+        binding.addButton.setOnClickListener(this::navAddEvent);
     }
 
     private void navAddEvent(View view) {
@@ -97,8 +101,11 @@ public class EventListFragment extends Fragment {
 
         viewModel.getEventData().observe(getViewLifecycleOwner(),eventModels -> {
             if (eventModels != null){
-                EventRecyclerAdapter adapterView = new EventRecyclerAdapter(Objects.requireNonNull(viewModel.getEventData().getValue()));
-                binding.eventRecyclerView.setAdapter(adapterView);
+               adapterView = (EventRecyclerAdapter) binding.eventRecyclerView.getAdapter();
+
+               if (adapterView != null){
+                   adapterView.updateData(eventModels);
+               }
             }
         });
 
