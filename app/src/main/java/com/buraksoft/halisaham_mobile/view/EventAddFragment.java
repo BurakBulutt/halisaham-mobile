@@ -13,6 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,13 +74,13 @@ public class EventAddFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
-        binding.dateText.setOnClickListener(this::dateListener);
-        binding.button.setOnClickListener(this::save);
         getCities();
         observeDatas();
+        binding.dateText.setOnClickListener(this::dateListener);
+        binding.button.setOnClickListener(this::save);
     }
 
-    private void save(View view) {
+    public void save(View view) {
         request.setTitle(binding.titleText.getText().toString());
         request.setDescription(binding.descriptionText.getText().toString());
     //    request.setExpirationDate(binding.dateText.getText()); //TODO Date düzenlencek
@@ -306,9 +310,18 @@ public class EventAddFragment extends Fragment {
 
         viewModel.getError().observe(getViewLifecycleOwner(),error -> {
             if (error){
-                Intent i = new Intent(requireContext(), MainActivity.class);
-                requireActivity().startActivity(i);
-                requireActivity().finish();
+                //TODO
+            }
+        });
+
+        viewModel.getSingleEventData().observe(getViewLifecycleOwner(),eventModel -> {
+            if (eventModel !=null){
+                NavController navController = Navigation.findNavController(requireView());
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.action_eventAddFragment_to_eventListFragment, true)
+                        .build();
+                NavDirections navigate = EventAddFragmentDirections.actionEventAddFragmentToEventListFragment();
+                navController.navigate(navigate,navOptions);
             }
         });
 

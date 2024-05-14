@@ -35,6 +35,7 @@ public class EventViewModel extends ViewModel {
     MutableLiveData<List<EventModel>> eventData = new MutableLiveData<>();
     MutableLiveData<List<CityModel>> cityData = new MutableLiveData<>();
     MutableLiveData<List<AreaModel>> areaData = new MutableLiveData<>();
+    MutableLiveData<EventModel> singleEventData = new MutableLiveData<>();
     MutableLiveData<Boolean> loading = new MutableLiveData<>();
     MutableLiveData<Boolean> error = new MutableLiveData<>();
     MutableLiveData<Boolean> authError = new MutableLiveData<>();
@@ -126,6 +127,7 @@ public class EventViewModel extends ViewModel {
                     @Override
                     public void onSuccess(Respond<EventModel> eventModelRespond) {
                         if (eventModelRespond.getMeta().getCode() == 200){
+                            singleEventData.setValue(eventModelRespond.getData());
                             loading.postValue(Boolean.FALSE);
                             error.postValue(Boolean.FALSE);
                         }
@@ -136,13 +138,15 @@ public class EventViewModel extends ViewModel {
                         loading.postValue(Boolean.FALSE);
                         error.postValue(Boolean.TRUE);
                     }
-
-
                 }));
     }
 
     public LiveData<List<EventModel>> getEventData() {
         return eventData;
+    }
+
+    public LiveData<EventModel> getSingleEventData() {
+        return singleEventData;
     }
 
     public LiveData<List<AreaModel>> getAreaData() {

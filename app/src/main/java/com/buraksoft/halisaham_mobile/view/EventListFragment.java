@@ -25,10 +25,12 @@ import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.databinding.FragmentEventListBinding;
 import com.buraksoft.halisaham_mobile.library.adapter.EventRecyclerAdapter;
+import com.buraksoft.halisaham_mobile.model.EventModel;
 import com.buraksoft.halisaham_mobile.viewmodel.EventViewModel;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class EventListFragment extends Fragment {
