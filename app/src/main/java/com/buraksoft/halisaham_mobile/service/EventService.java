@@ -4,6 +4,7 @@ import com.buraksoft.halisaham_mobile.library.rest.DataResponse;
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.EventModel;
 import com.buraksoft.halisaham_mobile.service.request.EventRequest;
+import com.buraksoft.halisaham_mobile.service.request.EventSearchRequest;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -22,18 +23,24 @@ public interface EventService {
     @GET("user-events")
     Observable<Respond<DataResponse<EventModel>>> getUserEvents(@Header(AUTHORIZATION) String jwt);
 
+    @GET("find-all-param")
+    Observable<Respond<DataResponse<EventModel>>> getByCityAndDistrictAndStreetAndArea(@Query("cityId") String cityId,@Query("districtId") String districtId,@Query("streetId") String streetId,@Query("areaId") String areaId, @Header(AUTHORIZATION) String jwt);
+
+    @GET("find-without-area")
+    Observable<Respond<DataResponse<EventModel>>> getByCityAndDistrictAndStreet(@Query("cityId") String cityId,@Query("districtId") String districtId,@Query("streetId") String streetId, @Header(AUTHORIZATION) String jwt);
+
     @GET("")
     Single<Respond<DataResponse<EventModel>>> getAll();
 
     @POST("save")
-    Single<Respond<EventModel>> createEvent(@Body EventRequest request,@Header(AUTHORIZATION) String jwt);
+    Single<Respond<EventModel>> createEvent(@Body EventRequest request, @Header(AUTHORIZATION) String jwt);
 
     @POST
-    Single<EventModel> joinEvent(@Query("eventId") String eventId,@Header(AUTHORIZATION) String jwt);
+    Single<EventModel> joinEvent(@Query("eventId") String eventId, @Header(AUTHORIZATION) String jwt);
 
     @PUT
-    Single<EventModel> deleteUserOnEvent(@Path("eventId") String eventId,@Query("userId") String userId,@Header(AUTHORIZATION) String jwt);
+    Single<EventModel> deleteUserOnEvent(@Path("eventId") String eventId, @Query("userId") String userId, @Header(AUTHORIZATION) String jwt);
 
     @DELETE
-    Single<Void> deleteEvent(@Path("id") String id,@Header(AUTHORIZATION) String jwt);
+    Single<Void> deleteEvent(@Path("id") String id, @Header(AUTHORIZATION) String jwt);
 }

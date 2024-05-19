@@ -11,5 +11,5 @@ import retrofit2.http.Header;
 public interface CityService {
     String AUTHORIZATION = "Authorization";
     @GET("get-all")
-    Single<Respond<DataResponse<CityModel>>> getAll(@Header(AUTHORIZATION) String jwt);
+    Single<Respond<DataResponse<CityModel>>> getAll();
 }

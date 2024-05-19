@@ -29,7 +29,6 @@ public class CityServiceAPI {
     }
 
     public Single<Respond<DataResponse<CityModel>>> getAllCities(){
-        String jwt = "Bearer " + TokenContextHolder.getToken();
-        return api.getAll(jwt);
+        return api.getAll();
     }
 }

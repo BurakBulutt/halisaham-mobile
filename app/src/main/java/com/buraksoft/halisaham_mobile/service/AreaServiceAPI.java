@@ -28,7 +28,6 @@ public class AreaServiceAPI {
     }
 
     public Single<Respond<DataResponse<AreaModel>>> getByDistrictAndStreet(String district, String street){
-        String jwt = "Bearer " + TokenContextHolder.getToken();
-        return api.findByDistrictAndStreet(district,street,jwt);
+        return api.findByDistrictAndStreet(district,street);
     }
 }

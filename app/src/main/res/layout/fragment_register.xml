@@ -23,7 +23,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:src="@drawable/png_transparent_ball_drawing_green_ball_sport_grass_sporting_goods" />
+            android:src="@drawable/png_transparent_ball_drawing_green_ball_sport_grass_sporting_goods_photoroom_png_photoroom" />
 
         <TextView
             android:id="@+id/badgeText"
@@ -119,6 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:backgroundTint="#006400"
             android:text="Kayıt Ol"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

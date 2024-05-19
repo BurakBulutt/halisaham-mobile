@@ -4,6 +4,7 @@ import com.buraksoft.halisaham_mobile.library.rest.DataResponse;
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.EventModel;
 import com.buraksoft.halisaham_mobile.service.request.EventRequest;
+import com.buraksoft.halisaham_mobile.service.request.EventSearchRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
 import io.reactivex.Observable;
@@ -11,6 +12,7 @@ import io.reactivex.Single;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Query;
 
 public class EventServiceAPI {
     private static final String BASE_URL = "http://10.0.2.2:8090/events/";
@@ -34,6 +36,16 @@ public class EventServiceAPI {
     public Observable<Respond<DataResponse<EventModel>>> getUserEvents(){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
         return api.getUserEvents(jwt);
+    }
+
+    public Observable<Respond<DataResponse<EventModel>>> getByCityAndDistrictAndStreetAndArea(EventSearchRequest request){
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.getByCityAndDistrictAndStreetAndArea(request.getCityId(),request.getDistrictId(),request.getStreetId(),request.getAreaId(),jwt);
+    }
+
+    public Observable<Respond<DataResponse<EventModel>>> getByCityAndDistrictAndStreet(EventSearchRequest request){
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.getByCityAndDistrictAndStreet(request.getCityId(),request.getDistrictId(),request.getStreetId(),jwt);
     }
 
     public Single<Respond<DataResponse<EventModel>>> getAll(){

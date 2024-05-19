@@ -10,7 +10,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Query;
 
 public interface AreaService {
-    String AUTHORIZATION = "Authorization";
     @GET("find-district-and-street")
-    Single<Respond<DataResponse<AreaModel>>> findByDistrictAndStreet(@Query("districtId") String districtId, @Query("streetId") String streetId, @Header(AUTHORIZATION) String jwt);
+    Single<Respond<DataResponse<AreaModel>>> findByDistrictAndStreet(@Query("districtId") String districtId, @Query("streetId") String streetId);
 }
