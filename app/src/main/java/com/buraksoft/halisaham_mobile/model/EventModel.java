@@ -1,11 +1,16 @@
 package com.buraksoft.halisaham_mobile.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 import java.util.List;
 
-public class EventModel {
+public class EventModel implements Parcelable {
     private String id;
-    private Date expirationDate;
+    private Long expirationDate;
     private AreaModel area;
     private String cityId;
     private String districtId;
@@ -13,11 +18,37 @@ public class EventModel {
     private Integer maxPeople;
     private String title;
     private String description;
-    private String userId;
+    private UserModel admin;
     private List<UserModel> users;
 
     public EventModel() {
     }
+
+    protected EventModel(Parcel in) {
+        id = in.readString();
+        cityId = in.readString();
+        districtId = in.readString();
+        streetId = in.readString();
+        if (in.readByte() == 0) {
+            maxPeople = null;
+        } else {
+            maxPeople = in.readInt();
+        }
+        title = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<EventModel> CREATOR = new Creator<EventModel>() {
+        @Override
+        public EventModel createFromParcel(Parcel in) {
+            return new EventModel(in);
+        }
+
+        @Override
+        public EventModel[] newArray(int size) {
+            return new EventModel[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -27,11 +58,11 @@ public class EventModel {
         this.id = id;
     }
 
-    public Date getExpirationDate() {
+    public Long getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(Long expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -91,12 +122,12 @@ public class EventModel {
         this.description = description;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserModel getAdmin() {
+        return admin;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setAdmin(UserModel admin) {
+        this.admin = admin;
     }
 
     public List<UserModel> getUsers() {
@@ -105,5 +136,26 @@ public class EventModel {
 
     public void setUsers(List<UserModel> users) {
         this.users = users;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(cityId);
+        dest.writeString(districtId);
+        dest.writeString(streetId);
+        if (maxPeople == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(maxPeople);
+        }
+        dest.writeString(title);
+        dest.writeString(description);
     }
 }

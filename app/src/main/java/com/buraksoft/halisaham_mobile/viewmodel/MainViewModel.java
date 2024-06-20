@@ -35,7 +35,6 @@ public class MainViewModel extends ViewModel {
     MutableLiveData<Boolean> error = new MutableLiveData<>();
 
     public void getCities(){
-        loading.setValue(Boolean.TRUE);
         disposable.add(cityServiceAPI.getAllCities()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -44,14 +43,12 @@ public class MainViewModel extends ViewModel {
                     public void onSuccess(Respond<DataResponse<CityModel>> dataResponseRespond) {
                         if (dataResponseRespond.getMeta().getCode() == 200){
                             cityData.setValue(dataResponseRespond.getData().getItems());
-                            loading.postValue(Boolean.FALSE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         error.postValue(Boolean.FALSE);
-                        loading.postValue(Boolean.FALSE);
                     }
                 }));
     }
@@ -66,21 +63,21 @@ public class MainViewModel extends ViewModel {
                         @Override
                         public void onNext(Respond<DataResponse<EventModel>> dataResponseRespond) {
                             if (dataResponseRespond.getMeta().getCode() == 200){
-                                eventData.setValue(dataResponseRespond.getData().getItems());
                                 loading.postValue(Boolean.FALSE);
+                                eventData.setValue(dataResponseRespond.getData().getItems());
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            error.postValue(Boolean.TRUE);
                             loading.postValue(Boolean.FALSE);
+                            error.postValue(Boolean.TRUE);
                         }
 
                         @Override
                         public void onComplete() {
-                            error.postValue(Boolean.FALSE);
                             loading.postValue(Boolean.FALSE);
+                            error.postValue(Boolean.FALSE);
                         }
                     }));
         }else {
@@ -134,6 +131,10 @@ public class MainViewModel extends ViewModel {
 
     public LiveData<List<EventModel>> getEventData(){
         return eventData;
+    }
+
+    public void clearEventData() {
+        eventData.setValue(null);
     }
 
     public LiveData<List<AreaModel>> getAreaData(){

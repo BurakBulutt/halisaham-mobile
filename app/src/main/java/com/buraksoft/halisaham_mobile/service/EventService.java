@@ -35,12 +35,18 @@ public interface EventService {
     @POST("save")
     Single<Respond<EventModel>> createEvent(@Body EventRequest request, @Header(AUTHORIZATION) String jwt);
 
-    @POST
-    Single<EventModel> joinEvent(@Query("eventId") String eventId, @Header(AUTHORIZATION) String jwt);
+    @PUT("update/{id}")
+    Single<Respond<EventModel>> updateEvent(@Body EventRequest request,@Path("id") String id,@Header(AUTHORIZATION) String jwt);
 
-    @PUT
-    Single<EventModel> deleteUserOnEvent(@Path("eventId") String eventId, @Query("userId") String userId, @Header(AUTHORIZATION) String jwt);
+    @POST("join-event")
+    Single<Respond<EventModel>> joinEvent(@Query("eventId") String eventId, @Header(AUTHORIZATION) String jwt);
 
-    @DELETE
-    Single<Void> deleteEvent(@Path("id") String id, @Header(AUTHORIZATION) String jwt);
+    @PUT("delete-user-event/{eventId}")
+    Single<Respond<Void>> deleteUserOnEvent(@Path("eventId") String eventId, @Query("userId") String userId, @Header(AUTHORIZATION) String jwt);
+
+    @DELETE("exit-event/{id}")
+    Single<Respond<Void>> exitEvent(@Path("id") String id, @Header(AUTHORIZATION) String jwt);
+
+    @GET("check-event-authority/{id}")
+    Single<Respond<Boolean>> getEventAuthorityView(@Path("id") String id,@Header(AUTHORIZATION) String jwt);
 }

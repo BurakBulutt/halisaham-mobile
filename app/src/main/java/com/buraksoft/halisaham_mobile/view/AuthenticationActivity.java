@@ -8,16 +8,13 @@ import androidx.navigation.Navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.buraksoft.halisaham_mobile.R;
 import com.buraksoft.halisaham_mobile.databinding.ActivityAuthenticationBinding;
-import com.buraksoft.halisaham_mobile.databinding.LayoutMenuImagesBinding;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
 public class AuthenticationActivity extends AppCompatActivity {
     private ActivityAuthenticationBinding binding;
-    private LayoutMenuImagesBinding menuImagesBinding;
     private NavController navController;
     private NavInflater inflater;
     private NavGraph graph;
@@ -28,9 +25,22 @@ public class AuthenticationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAuthenticationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        menuImagesBinding = binding.layoutMenuImages;
-        intentActivies();
+        binding.bottomNavBar.setSelectedItemId(R.id.navigation_profile);
+        binding.bottomNavBar.setOnItemSelectedListener(item -> {
 
+            if (item.getItemId() == R.id.navigation_matches) {
+                Intent intent = new Intent(getApplicationContext(), EventActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            return true;
+        });
+        binding.floatingActionButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override
@@ -42,27 +52,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         checkToken();
     }
 
-    public void intentActivies(){
-        menuImagesBinding.homeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        menuImagesBinding.eventImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO
-                Intent intent = new Intent(AuthenticationActivity.this, EventActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-    }
 
     public void checkToken(){
         if (TokenContextHolder.getToken() != null){

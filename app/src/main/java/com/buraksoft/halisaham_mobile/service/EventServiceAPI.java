@@ -57,19 +57,29 @@ public class EventServiceAPI {
         return api.createEvent(request,jwt);
     }
 
-    public  Single<EventModel> joinEvent(String eventId){
+    public Single<Respond<EventModel>> updateEvent(EventRequest request,String id){
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.updateEvent(request,id,jwt);
+    }
+
+    public  Single<Respond<EventModel>> joinEvent(String eventId){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
         return api.joinEvent(eventId,jwt);
     }
 
-    public Single<EventModel> deleteUserOnEvent(String eventId, String userId){
+    public Single<Respond<Void>> deleteUserOnEvent(String eventId, String userId){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
         return api.deleteUserOnEvent(eventId,userId,jwt);
     }
 
-    public Single<Void> deleteEvent(String id){
+    public Single<Respond<Void>> exitEvent(String id){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
-        return api.deleteEvent(id,jwt);
+        return api.exitEvent(id,jwt);
+    }
+
+    public Single<Respond<Boolean>> getEventAuthorityView(String id){
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.getEventAuthorityView(id,jwt);
     }
 
 

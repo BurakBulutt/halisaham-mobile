@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -76,16 +78,24 @@ public class EventAddFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
         getCities();
         observeDatas();
+        binding.backButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
         binding.dateText.setOnClickListener(this::dateListener);
         binding.button.setOnClickListener(this::save);
     }
 
-    public void save(View view) {
+    public void save(View view)  {
         request.setTitle(binding.titleText.getText().toString());
         request.setDescription(binding.descriptionText.getText().toString());
-    //    request.setExpirationDate(binding.dateText.getText()); //TODO Date düzenlencek
 
-        request.setExpirationDate(null);
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            Date date = format.parse(binding.dateText.getText().toString());
+            request.setExpirationDate(date.getTime());
+        } catch (ParseException e) {
+            request.setExpirationDate(null);
+        }
 
         viewModel.saveEvent(request);
     }
@@ -100,7 +110,8 @@ public class EventAddFragment extends Fragment {
         DatePickerDialog dialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                binding.dateText.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                String formatMonth = String.format("%02d",month + 1);
+                binding.dateText.setText(dayOfMonth + "." + formatMonth + "." + year);
             }
         }, year, month, day);
 
@@ -283,8 +294,10 @@ public class EventAddFragment extends Fragment {
                     }
 
                     request.setAreaId(areaModel.get().getId());
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(areaModel.get().getPhoto(), 0, areaModel.get().getPhoto().length);
-                    binding.imageView.setImageBitmap(bitmap);
+                    if (areaModel.get().getPhoto() != null){
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(areaModel.get().getPhoto(), 0, areaModel.get().getPhoto().length);
+                        binding.imageView.setImageBitmap(bitmap);
+                    }
                 }
             }
 

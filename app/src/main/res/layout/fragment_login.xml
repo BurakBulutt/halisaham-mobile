@@ -23,9 +23,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:src="@drawable/png_transparent_ball_drawing_green_ball_sport_grass_sporting_goods"
-            app:srcCompat="@drawable/png_transparent_ball_drawing_green_ball_sport_grass_sporting_goods" />
-
+            android:src="@drawable/footballboll__1_"/>
         <TextView
             android:id="@+id/badgeText"
             android:layout_width="match_parent"

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/photoImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/_60_f_780556382_fokn1t5ea0nntxtovb6bmd8krjhqs55n" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="TESTVIEW"
+        android:textSize="16dp" />
+
+    <ImageButton
+        android:id="@+id/removePersonButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="visible"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_person_remove"
+        app:tint="#FF0000"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+</LinearLayout>

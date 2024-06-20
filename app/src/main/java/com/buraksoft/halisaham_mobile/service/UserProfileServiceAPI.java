@@ -1,7 +1,9 @@
 package com.buraksoft.halisaham_mobile.service;
 
+import com.buraksoft.halisaham_mobile.library.rest.DataResponse;
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.UserProfileModel;
+import com.buraksoft.halisaham_mobile.service.request.UserProfileBulkRequest;
 import com.buraksoft.halisaham_mobile.service.request.UserProfileRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
@@ -36,6 +38,11 @@ public class UserProfileServiceAPI {
     public Single<Respond<UserProfileModel>> updateUserProfile(String id, UserProfileRequest request){
         final String jwt = "Bearer " + TokenContextHolder.getToken();
         return api.updateProfile(id,request,jwt);
+    }
+
+    public Single<Respond<DataResponse<UserProfileModel>>> getProfilesBulk(UserProfileBulkRequest request){
+        final String jwt = "Bearer " + TokenContextHolder.getToken();
+        return api.getBulkProfiles(request,jwt);
     }
 
 }

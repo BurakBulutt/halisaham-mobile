@@ -3,11 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    app:startDestination="@id/mainActivity">
+    app:startDestination="@id/mainFragment">
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.buraksoft.halisaham_mobile.view.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+    <fragment
+        android:id="@+id/searchedEventListFragment"
+        android:name="com.buraksoft.halisaham_mobile.view.SearchedEventListFragment"
+        android:label="fragment_searched_event_list"
+        tools:layout="@layout/fragment_searched_event_list">
+        <argument
+            android:name="eventModelList"
+            app:argType="com.buraksoft.halisaham_mobile.model.EventModel[]" />
+        <action
+            android:id="@+id/action_searchedEventListFragment_to_eventDialogFragment"
+            app:destination="@id/eventDialogFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.buraksoft.halisaham_mobile.view.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_searchedEventListFragment"
+            app:destination="@id/searchedEventListFragment">
+        </action>
+    </fragment>
+    <dialog
+        android:id="@+id/eventDialogFragment"
+        android:name="com.buraksoft.halisaham_mobile.view.EventDialogFragment"
+        android:label="fragment_event_dialog"
+        tools:layout="@layout/fragment_event_dialog" >
+        <argument
+            android:name="eventModel"
+            app:argType="com.buraksoft.halisaham_mobile.model.EventModel" />
+    </dialog>
 </navigation>

@@ -1,8 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Halisahammobile" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Halisahammobile" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryVariant">@color/levander</item>
+
+    </style>
+
+    <style name="SpinnerDropdownTheme" parent="Base.Theme.Halisahammobile">
+        <item name="android:popupBackground">@drawable/spinner_dropdown_background</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Theme.Halisahammobile" parent="Base.Theme.Halisahammobile" />

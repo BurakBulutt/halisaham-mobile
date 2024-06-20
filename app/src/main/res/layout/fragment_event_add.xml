@@ -6,90 +6,98 @@
     android:layout_height="match_parent"
     tools:context=".view.EventAddFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/addToolbar"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#006400">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Maç Oluştur"
-            android:textSize="18dp"
-            android:textColor="#FFFFFF"
-            android:layout_gravity="center"/>
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addToolbar"
-        android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="30dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/addToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="#006400">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Maç Oluştur"
+                    android:textSize="18dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_gravity="center"/>
+
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_margin="5dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@android:drawable/ic_media_rew"
+                    app:tint="@color/white" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_margin="30dp"
+                android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
 
             <LinearLayout
                 android:id="@+id/spinnerLinear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_margin="5dp">
 
                 <Spinner
                     android:id="@+id/citySpinner"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    style="@style/CustomSpinnerStyle"/>
 
                 <Spinner
                     android:id="@+id/districtSpinner"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    style="@style/CustomSpinnerStyle"/>
 
                 <Spinner
                     android:id="@+id/streetSpinner"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:spinnerMode="dropdown" />
-
+                    android:spinnerMode="dropdown"
+                    style="@style/CustomSpinnerStyle"/>
             </LinearLayout>
 
             <Spinner
                 android:id="@+id/areaSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
                 android:spinnerMode="dropdown"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerLinear" />
+                style="@style/CustomSpinnerStyle" />
 
             <EditText
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_margin="10dp"
                 android:ems="10"
                 android:hint="Başlık"
                 android:inputType="text" />
@@ -98,7 +106,7 @@
                 android:id="@+id/descriptionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_margin="10dp"
                 android:ems="10"
                 android:hint="Açıklama"
                 android:inputType="text" />
@@ -107,18 +115,28 @@
                 android:id="@+id/dateText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_margin="10dp"
                 android:textSize="18dp"
                 android:hint="Tarih"
                 android:inputType="none" />
 
+            <TextView
+                android:id="@+id/peopleCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:textSize="14dp"
+                android:hint="Kişi Sayısı"
+                android:inputType="none"/>
+
             <Spinner
                 android:id="@+id/countSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dropdown"
+                style="@style/CustomSpinnerStyle"/>
 
             <Button
                 android:id="@+id/button"
@@ -129,7 +147,8 @@
                 android:backgroundTint="#006400"
                 android:text="Oluştur"
                 android:textColor="#FFFFFF" />
-
         </LinearLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

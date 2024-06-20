@@ -9,7 +9,14 @@
         android:id="@+id/eventChatFragment"
         android:name="com.buraksoft.halisaham_mobile.view.EventChatFragment"
         android:label="fragment_event_chat"
-        tools:layout="@layout/fragment_event_chat" />
+        tools:layout="@layout/fragment_event_chat" >
+        <action
+            android:id="@+id/action_eventChatFragment_to_eventPageFragment"
+            app:destination="@id/eventPageFragment" />
+        <argument
+            android:name="eventModel"
+            app:argType="com.buraksoft.halisaham_mobile.model.EventModel" />
+    </fragment>
     <fragment
         android:id="@+id/eventListFragment"
         android:name="com.buraksoft.halisaham_mobile.view.EventListFragment"
@@ -30,5 +37,20 @@
         <action
             android:id="@+id/action_eventAddFragment_to_eventListFragment"
             app:destination="@id/eventListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/eventPageFragment"
+        android:name="com.buraksoft.halisaham_mobile.view.EventPageFragment"
+        android:label="fragment_event_page"
+        tools:layout="@layout/fragment_event_page" >
+        <argument
+            android:name="eventModel"
+            app:argType="com.buraksoft.halisaham_mobile.model.EventModel" />
+        <action
+            android:id="@+id/action_eventPageFragment_to_eventListFragment"
+            app:destination="@id/eventListFragment" />
+        <action
+            android:id="@+id/action_eventPageFragment_to_eventChatFragment"
+            app:destination="@id/eventChatFragment" />
     </fragment>
 </navigation>

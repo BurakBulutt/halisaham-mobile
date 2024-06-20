@@ -7,16 +7,18 @@
     tools:context=".view.UserProfileFragment">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePhoto"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@android:color/black"
         android:layout_marginTop="30dp"
         app:layout_constraintBottom_toTopOf="@+id/profileLinear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/png_clipart_user_profile_computer_icons_login_user_avatars_monochrome_black_thumbnail" />
+        android:src="@drawable/png_clipart_user_profile_computer_icons_login_user_avatars_monochrome_black_thumbnail_photoroom_png_photoroom" />
 
     <LinearLayout
         android:id="@+id/profileLinear"
@@ -68,20 +70,33 @@
             android:hint="Şifre"
             android:inputType="textPassword" />
 
-        <Button
-            android:id="@+id/changePasswordButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Şifre Değiştir"
-            android:layout_gravity="center"/>
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Çıkış Yap"
-            android:layout_gravity="center"/>
+            <Button
+                android:id="@+id/changePasswordButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:text="Şifre Değiştir" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0"/>
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/levander"
+                android:text="Çıkış Yap" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

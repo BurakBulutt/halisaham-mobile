@@ -12,13 +12,17 @@ import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.AreaModel;
 import com.buraksoft.halisaham_mobile.model.CityModel;
 import com.buraksoft.halisaham_mobile.model.EventModel;
+import com.buraksoft.halisaham_mobile.model.UserProfileModel;
 import com.buraksoft.halisaham_mobile.service.AreaServiceAPI;
 import com.buraksoft.halisaham_mobile.service.CityServiceAPI;
 import com.buraksoft.halisaham_mobile.service.EventServiceAPI;
+import com.buraksoft.halisaham_mobile.service.UserProfileServiceAPI;
 import com.buraksoft.halisaham_mobile.service.request.EventRequest;
+import com.buraksoft.halisaham_mobile.service.request.UserProfileBulkRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
 import java.util.List;
+import java.util.Set;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -30,8 +34,11 @@ public class EventViewModel extends ViewModel {
     private final EventServiceAPI eventService = new EventServiceAPI();
     private final CityServiceAPI cityService = new CityServiceAPI();
     private final AreaServiceAPI areaService = new AreaServiceAPI();
+    private final UserProfileServiceAPI userProfileServiceAPI = new UserProfileServiceAPI();
     private final CompositeDisposable disposable = new CompositeDisposable();
 
+    MutableLiveData<List<UserProfileModel>> userProfileData = new MutableLiveData<>();
+    MutableLiveData<Boolean> profileError = new MutableLiveData<>();
     MutableLiveData<List<EventModel>> eventData = new MutableLiveData<>();
     MutableLiveData<List<CityModel>> cityData = new MutableLiveData<>();
     MutableLiveData<List<AreaModel>> areaData = new MutableLiveData<>();
@@ -39,6 +46,10 @@ public class EventViewModel extends ViewModel {
     MutableLiveData<Boolean> loading = new MutableLiveData<>();
     MutableLiveData<Boolean> error = new MutableLiveData<>();
     MutableLiveData<Boolean> authError = new MutableLiveData<>();
+    MutableLiveData<Boolean> success = new MutableLiveData<>();
+    MutableLiveData<Boolean> eventAuthorityView = new MutableLiveData<>();
+    MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
+    MutableLiveData<String> removedUser = new MutableLiveData<>();
 
     public void getUserEvents(){
         loading.setValue(Boolean.TRUE);
@@ -139,6 +150,150 @@ public class EventViewModel extends ViewModel {
                         error.postValue(Boolean.TRUE);
                     }
                 }));
+    }
+
+    public void joinEvent(String eventId){
+        loading.setValue(Boolean.TRUE);
+        disposable.add(eventService.joinEvent(eventId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<EventModel>>() {
+                    @Override
+                    public void onSuccess(Respond<EventModel> eventModelRespond) {
+                        if (eventModelRespond.getMeta().getCode() == 200){
+                            loading.postValue(Boolean.FALSE);
+                            singleEventData.postValue(eventModelRespond.getData());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        loading.postValue(Boolean.FALSE);
+                        error.postValue(Boolean.FALSE);
+                    }
+                }));
+    }
+
+    public void exitOnEvent(String id){
+        loading.postValue(Boolean.TRUE);
+        updateSuccess.setValue(Boolean.FALSE);
+        error.postValue(Boolean.FALSE);
+        disposable.add(eventService.exitEvent(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<Void>>() {
+                    @Override
+                    public void onSuccess(Respond<Void> voidRespond) {
+                        loading.postValue(Boolean.FALSE);
+                        if (voidRespond.getMeta().getCode() == 200){
+                            success.postValue(Boolean.TRUE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        error.postValue(Boolean.TRUE);
+                    }
+                }));
+    }
+
+    public void getUserProfileIdIn(List<String> userIds){
+        UserProfileBulkRequest request = new UserProfileBulkRequest(userIds);
+        loading.postValue(Boolean.TRUE);
+        disposable.add(userProfileServiceAPI.getProfilesBulk(request)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<DataResponse<UserProfileModel>>>() {
+                    @Override
+                    public void onSuccess(Respond<DataResponse<UserProfileModel>> dataResponseRespond) {
+                        loading.postValue(Boolean.FALSE);
+                        if (dataResponseRespond.getMeta().getCode() == 200){
+                            userProfileData.setValue(dataResponseRespond.getData().getItems());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        loading.postValue(Boolean.FALSE);
+                        profileError.postValue(Boolean.TRUE);
+                    }
+                }));
+    };
+
+    public void getEventAuthority(String id){
+        disposable.add(eventService.getEventAuthorityView(id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<Boolean>>() {
+                    @Override
+                    public void onSuccess(Respond<Boolean> booleanRespond) {
+                        if (booleanRespond.getMeta().getCode() == 200){
+                            error.postValue(Boolean.FALSE);
+                            eventAuthorityView.postValue(booleanRespond.getData());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        error.postValue(Boolean.TRUE);
+                    }
+                }));
+    }
+
+    public void updateEvent(EventRequest request,String id){
+        loading.setValue(Boolean.TRUE);
+        disposable.add(eventService.updateEvent(request,id)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<EventModel>>() {
+                    @Override
+                    public void onSuccess(Respond<EventModel> eventModelRespond) {
+                        loading.postValue(Boolean.FALSE);
+                        singleEventData.setValue(eventModelRespond.getData());
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        error.postValue(Boolean.TRUE);
+                        loading.postValue(Boolean.FALSE);
+                    }
+                }));
+    }
+
+    public void deleteUserOnEvent(String eventId,String userId){
+        disposable.add(eventService.deleteUserOnEvent(eventId,userId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<Void>>() {
+                    @Override
+                    public void onSuccess(Respond<Void> voidRespond) {
+                        if (voidRespond.getMeta().getCode() == 200){
+                            updateSuccess.postValue(Boolean.TRUE);
+                            removedUser.postValue(userId);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        updateSuccess.postValue(Boolean.FALSE);
+
+                    }
+                }));
+    }
+    public LiveData<String> getRemovedUser(){return removedUser;}
+    public LiveData<Boolean> getUpdateSuccess(){return updateSuccess;}
+    public LiveData<Boolean> getEventAuthortityView(){
+        return eventAuthorityView;
+    }
+    public LiveData<Boolean> getProfileError(){
+        return profileError;
+    }
+
+    public LiveData<List<UserProfileModel>> getUserProfileData(){
+        return userProfileData;
+    }
+
+    public LiveData<Boolean> getSuccess() {
+        return success;
     }
 
     public LiveData<List<EventModel>> getEventData() {

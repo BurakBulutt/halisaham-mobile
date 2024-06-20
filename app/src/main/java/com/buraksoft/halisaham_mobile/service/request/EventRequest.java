@@ -3,7 +3,7 @@ package com.buraksoft.halisaham_mobile.service.request;
 import java.util.Date;
 
 public class EventRequest {
-    private Date expirationDate;
+    private Long expirationDate;
     private String cityId;
     private String districtId;
     private String streetId;
@@ -15,11 +15,11 @@ public class EventRequest {
     public EventRequest() {
     }
 
-    public Date getExpirationDate() {
+    public Long getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(Long expirationDate) {
         this.expirationDate = expirationDate;
     }
 

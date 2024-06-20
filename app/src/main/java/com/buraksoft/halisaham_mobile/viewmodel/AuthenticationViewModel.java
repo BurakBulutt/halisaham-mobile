@@ -29,6 +29,8 @@ public class AuthenticationViewModel extends ViewModel {
     MutableLiveData<TokenModel> tokenData = new MutableLiveData<>();
     MutableLiveData<Boolean> loading = new MutableLiveData<>();
     MutableLiveData<Boolean> error = new MutableLiveData<>();
+    MutableLiveData<Boolean> verifyError = new MutableLiveData<>();
+    MutableLiveData<Boolean> authError = new MutableLiveData<>();
     MutableLiveData<UserProfileModel> userProfile = new MutableLiveData<>();
 
 
@@ -44,15 +46,22 @@ public class AuthenticationViewModel extends ViewModel {
                         .subscribeWith(new DisposableSingleObserver<Respond<TokenModel>>() {
                             @Override
                             public void onSuccess(Respond<TokenModel> tokenModelRespond) {
-                                tokenData.postValue(tokenModelRespond.getData());
-                                loading.postValue(Boolean.FALSE);
-                                error.postValue(Boolean.FALSE);
+                                if (tokenModelRespond.getMeta().getCode() == 200){
+                                    tokenData.postValue(tokenModelRespond.getData());
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.FALSE);
+                                }else if (tokenModelRespond.getMeta().getCode() == 1052) {
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.FALSE);
+                                    verifyError.postValue(Boolean.TRUE);
+                                }
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 error.postValue(Boolean.TRUE);
                                 loading.postValue(Boolean.FALSE);
+                                verifyError.postValue(Boolean.FALSE);
                             }
                         })
         );
@@ -72,9 +81,20 @@ public class AuthenticationViewModel extends ViewModel {
                                     TokenContextHolder.setToken(tokenModelRespond.getData().getToken());
                                     error.postValue(Boolean.FALSE);
                                     loading.postValue(Boolean.FALSE);
+                                    verifyError.postValue(Boolean.FALSE);
+                                } else if (tokenModelRespond.getMeta().getCode() == 1052) {
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.FALSE);
+                                    verifyError.postValue(Boolean.TRUE);
+                                }else if (tokenModelRespond.getMeta().getCode() == 1051 || tokenModelRespond.getMeta().getCode() == 404) {
+                                    loading.postValue(Boolean.FALSE);
+                                    error.postValue(Boolean.FALSE);
+                                    authError.postValue(Boolean.TRUE);
                                 } else {
                                     loading.postValue(Boolean.FALSE);
                                     error.postValue(Boolean.TRUE);
+                                    verifyError.postValue(Boolean.FALSE);
+                                    authError.postValue(Boolean.FALSE);
                                 }
 
                             }
@@ -149,6 +169,22 @@ public class AuthenticationViewModel extends ViewModel {
                             }
                         })
         );
+    }
+
+    public LiveData<Boolean> getVerifyError(){
+        return verifyError;
+    }
+
+    public void clearVerifyError() {
+        verifyError.postValue(Boolean.FALSE);
+    }
+
+    public LiveData<Boolean> getAuthError(){
+        return authError;
+    }
+
+    public void clearAuthError() {
+        authError.postValue(Boolean.FALSE);
     }
 
     public LiveData<Boolean> getLoading() {

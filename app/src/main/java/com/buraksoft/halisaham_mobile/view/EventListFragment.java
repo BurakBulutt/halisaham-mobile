@@ -68,6 +68,13 @@ public class EventListFragment extends Fragment {
         observeDatas();
         getUserEvents();
         binding.addButton.setOnClickListener(this::navAddEvent);
+        adapterView.setOnItemClickListener(this::itemListener);
+    }
+
+    private void itemListener(EventModel eventModel) {
+        NavController navController = Navigation.findNavController(requireView());
+        EventListFragmentDirections.ActionEventListFragmentToEventChatFragment action = EventListFragmentDirections.actionEventListFragmentToEventChatFragment(eventModel);
+        navController.navigate(action);
     }
 
     private void navAddEvent(View view) {
