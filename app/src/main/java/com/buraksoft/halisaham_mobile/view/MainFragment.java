@@ -274,7 +274,20 @@ public class MainFragment extends Fragment {
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(),error -> {
-
+            if (error){
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("UYARI")
+                        .setMessage("Servis Devre Dışı")
+                        .setCancelable(Boolean.FALSE)
+                        .setNeutralButton("TAMAM", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requireActivity().finish();
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
         });
 
         viewModel.getEventData().observe(getViewLifecycleOwner(),eventModelList -> {

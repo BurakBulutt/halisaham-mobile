@@ -24,15 +24,15 @@ public class UserRecylerAdapter extends RecyclerView.Adapter<UserRecylerAdapter.
     private List<UserModel> userModelList;
     private List<UserProfileModel> userProfileModelList;
     private Boolean isAdmin;
-    private String eventId;
+    private EventModel event;
     private OnItemClickListener onItemClickListener;
 
 
-    public UserRecylerAdapter(@NonNull List<UserModel> userModelList,String eventId) {
+    public UserRecylerAdapter(@NonNull List<UserModel> userModelList,EventModel event) {
         this.userModelList = userModelList;
         this.isAdmin = Boolean.FALSE;
         this.userProfileModelList = new ArrayList<>();
-        this.eventId = eventId;
+        this.event = event;
     }
 
     public interface OnItemClickListener {
@@ -67,14 +67,15 @@ public class UserRecylerAdapter extends RecyclerView.Adapter<UserRecylerAdapter.
         }
 
         if (isAdmin) {
-            holder.binding.removePersonButton.setVisibility(View.VISIBLE);
-            holder.binding.removePersonButton.setOnClickListener(v -> {
-                if (onItemClickListener != null){
-                    onItemClickListener.onItemClick(eventId,userModel);
-                }
-            });
+            if (Objects.equals(userModel.getId().equals(event.getAdmin().getId()),Boolean.FALSE)){
+                holder.binding.removePersonButton.setVisibility(View.VISIBLE);
+                holder.binding.removePersonButton.setOnClickListener(v -> {
+                    if (onItemClickListener != null){
+                        onItemClickListener.onItemClick(event.getId(),userModel);
+                    }
+                });
+            }
         }
-
     }
 
     @Override

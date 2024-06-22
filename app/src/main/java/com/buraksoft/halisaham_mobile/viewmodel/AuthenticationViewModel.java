@@ -79,6 +79,7 @@ public class AuthenticationViewModel extends ViewModel {
                                 if (tokenModelRespond.getMeta().getCode() == 200) {
                                     tokenData.postValue(tokenModelRespond.getData());
                                     TokenContextHolder.setToken(tokenModelRespond.getData().getToken());
+                                    TokenContextHolder.setUserMail(request.getEmail());
                                     error.postValue(Boolean.FALSE);
                                     loading.postValue(Boolean.FALSE);
                                     verifyError.postValue(Boolean.FALSE);

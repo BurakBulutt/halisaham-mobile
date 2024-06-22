@@ -48,7 +48,7 @@ public class MainViewModel extends ViewModel {
 
                     @Override
                     public void onError(Throwable e) {
-                        error.postValue(Boolean.FALSE);
+                        error.postValue(Boolean.TRUE);
                     }
                 }));
     }

@@ -10,14 +10,19 @@ import androidx.lifecycle.ViewModel;
 import com.buraksoft.halisaham_mobile.library.rest.DataResponse;
 import com.buraksoft.halisaham_mobile.library.rest.Respond;
 import com.buraksoft.halisaham_mobile.model.AreaModel;
+import com.buraksoft.halisaham_mobile.model.ChatModel;
 import com.buraksoft.halisaham_mobile.model.CityModel;
 import com.buraksoft.halisaham_mobile.model.EventModel;
+import com.buraksoft.halisaham_mobile.model.MessageModel;
 import com.buraksoft.halisaham_mobile.model.UserProfileModel;
 import com.buraksoft.halisaham_mobile.service.AreaServiceAPI;
+import com.buraksoft.halisaham_mobile.service.ChatServiceAPI;
 import com.buraksoft.halisaham_mobile.service.CityServiceAPI;
 import com.buraksoft.halisaham_mobile.service.EventServiceAPI;
+import com.buraksoft.halisaham_mobile.service.MessageServiceAPI;
 import com.buraksoft.halisaham_mobile.service.UserProfileServiceAPI;
 import com.buraksoft.halisaham_mobile.service.request.EventRequest;
+import com.buraksoft.halisaham_mobile.service.request.MessageRequest;
 import com.buraksoft.halisaham_mobile.service.request.UserProfileBulkRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
 
@@ -32,10 +37,13 @@ import io.reactivex.schedulers.Schedulers;
 
 public class EventViewModel extends ViewModel {
     private final EventServiceAPI eventService = new EventServiceAPI();
+    private final ChatServiceAPI chatService = new ChatServiceAPI();
+    private final MessageServiceAPI messageService = new MessageServiceAPI();
     private final CityServiceAPI cityService = new CityServiceAPI();
     private final AreaServiceAPI areaService = new AreaServiceAPI();
     private final UserProfileServiceAPI userProfileServiceAPI = new UserProfileServiceAPI();
     private final CompositeDisposable disposable = new CompositeDisposable();
+    private StompClient stompClient;
 
     MutableLiveData<List<UserProfileModel>> userProfileData = new MutableLiveData<>();
     MutableLiveData<Boolean> profileError = new MutableLiveData<>();
@@ -50,6 +58,8 @@ public class EventViewModel extends ViewModel {
     MutableLiveData<Boolean> eventAuthorityView = new MutableLiveData<>();
     MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
     MutableLiveData<String> removedUser = new MutableLiveData<>();
+    MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
+    MutableLiveData<String> chatId = new MutableLiveData<>();
 
     public void getUserEvents(){
         loading.setValue(Boolean.TRUE);
@@ -279,6 +289,75 @@ public class EventViewModel extends ViewModel {
                     }
                 }));
     }
+
+    public void getEventChat(String eventId){
+        error.setValue(Boolean.FALSE);
+        disposable.add(chatService.getByEventId(eventId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<ChatModel>>() {
+                    @Override
+                    public void onSuccess(Respond<ChatModel> chatModelRespond) {
+                        if (chatModelRespond.getMeta().getCode() == 200){
+                            error.postValue(Boolean.FALSE);
+                            chatId.postValue(chatModelRespond.getData().getId());
+                            getMessagesChat(chatModelRespond.getData().getId());
+                        }else {
+                            error.postValue(Boolean.TRUE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        error.postValue(Boolean.TRUE);
+                    }
+                }));
+    }
+
+    public void getMessagesChat(String chatId){
+        error.setValue(Boolean.FALSE);
+        disposable.add(messageService.getByChatId(chatId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Respond<DataResponse<MessageModel>>>() {
+                    @Override
+                    public void onNext(Respond<DataResponse<MessageModel>> dataResponseRespond) {
+                        if (dataResponseRespond.getMeta().getCode() == 200){
+                            messages.postValue(dataResponseRespond.getData().getItems());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        error.postValue(Boolean.TRUE);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        //TODO
+                    }
+                }));
+    }
+
+    public void sendMessage(MessageRequest request){
+        disposable.add(messageService.createMessage(request)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Respond<MessageModel>>() {
+                    @Override
+                    public void onSuccess(Respond<MessageModel> messageModelRespond) {
+                        Log.e("BASARILI","mesaj gitti");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("BASARISIZ","mesaj gitmedi");
+                    }
+                }));
+    }
+
+    public LiveData<String> getChatId(){return chatId;}
+    public LiveData<List<MessageModel>> getMessages(){return messages;}
     public LiveData<String> getRemovedUser(){return removedUser;}
     public LiveData<Boolean> getUpdateSuccess(){return updateSuccess;}
     public LiveData<Boolean> getEventAuthortityView(){

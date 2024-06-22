@@ -140,7 +140,7 @@ public class EventPageFragment extends Fragment {
             initAreaPhoto();
         }
         binding.userRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new UserRecylerAdapter(eventModel.getUsers(),eventModel.getId());
+        adapter = new UserRecylerAdapter(eventModel.getUsers(),eventModel);
         adapter.setOnItemClickListener(new UserRecylerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String eventId, UserModel userModel) {
