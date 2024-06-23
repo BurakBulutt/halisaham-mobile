@@ -6,15 +6,17 @@ public class MessageModel {
     private UserModel user;
     private String chatId;
     private String message;
+    private Date messageDate;
 
     public MessageModel() {
 
     }
 
-    public MessageModel(UserModel user, String chatId, String message) {
+    public MessageModel(UserModel user, String chatId, String message,Date messageDate) {
         this.user = user;
         this.chatId = chatId;
         this.message = message;
+        this.messageDate = messageDate;
     }
 
     public UserModel getUser() {
@@ -39,5 +41,9 @@ public class MessageModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Date getMessageDate(){
+        return messageDate;
     }
 }

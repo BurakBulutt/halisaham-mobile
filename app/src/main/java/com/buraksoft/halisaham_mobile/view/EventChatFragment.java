@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.R;
 import com.buraksoft.halisaham_mobile.databinding.FragmentEventChatBinding;
+import com.buraksoft.halisaham_mobile.library.adapter.MessageAdapter;
 import com.buraksoft.halisaham_mobile.model.EventModel;
 import com.buraksoft.halisaham_mobile.service.request.MessageRequest;
 import com.buraksoft.halisaham_mobile.utils.TokenContextHolder;
@@ -29,6 +30,7 @@ public class EventChatFragment extends Fragment {
     private FragmentEventChatBinding binding;
     private EventModel eventModel;
     private EventViewModel viewModel;
+    private MessageAdapter adapter;
 
     public EventChatFragment() {
 
@@ -66,8 +68,9 @@ public class EventChatFragment extends Fragment {
         binding.backButton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
-
-        binding.messageRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false);
+        linearLayoutManager.setStackFromEnd(true);
+        binding.messageRecyclerView.setLayoutManager(linearLayoutManager);
         binding.chatToolbar.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireView());
             EventChatFragmentDirections.ActionEventChatFragmentToEventPageFragment action =
@@ -75,6 +78,13 @@ public class EventChatFragment extends Fragment {
             navController.navigate(action);
         });
         binding.sendButton.setOnClickListener(this::sendMessage);
+        binding.messageRecyclerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom < oldBottom) {
+                binding.messageRecyclerView.postDelayed(() -> {
+                    binding.messageRecyclerView.scrollToPosition(adapter.getItemCount()-1);
+                }, 100);
+            }
+        });
     }
 
     private void sendMessage(View view) {
@@ -104,10 +114,29 @@ public class EventChatFragment extends Fragment {
 
     private void observeDatas(){
         viewModel.getMessages().observe(getViewLifecycleOwner(),messageModels -> {
-            if (messageModels != null){
-                Toast.makeText(requireContext(),"Mesajlar Geliyo",Toast.LENGTH_LONG).show();
+            if (messageModels != null && !messageModels.isEmpty()){
+                if (binding.messageRecyclerView.getAdapter() == null){
+                    adapter = new MessageAdapter(requireContext(),messageModels,TokenContextHolder.getUserMail());
+                    binding.messageRecyclerView.setAdapter(adapter);
+                }else {
+                    adapter.updateData(messageModels);
+                }
+
+                binding.messageRecyclerView.post(() -> {
+                    if (adapter.getItemCount() > 0) {
+                        binding.messageRecyclerView.scrollToPosition(adapter.getItemCount()-1);
+                    }
+                });
             }
         });
+
+        viewModel.getSuccess().observe(getViewLifecycleOwner(),success -> {
+            if (success){
+                binding.messageText.setText("");
+                Toast.makeText(requireContext(),"Mesajlar Gönderildi",Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     private void selectBottomNavVisibilty(int id){
