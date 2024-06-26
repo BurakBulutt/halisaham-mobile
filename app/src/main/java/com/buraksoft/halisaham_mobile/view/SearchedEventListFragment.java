@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 public class SearchedEventListFragment extends Fragment {
     private FragmentSearchedEventListBinding binding;
-    private MainViewModel viewModel;
     private SearchedEventRecyclerAdapter adapter;
     private List<EventModel> eventModelList;
 
@@ -62,7 +61,6 @@ public class SearchedEventListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         if (eventModelList.isEmpty()){
             emptyAlert();

@@ -1,6 +1,8 @@
 package com.buraksoft.halisaham_mobile.library.adapter;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -35,7 +37,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         EventModel event = events.get(position);
         if (event.getExpirationDate() != null){
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             Date date = new Date(event.getExpirationDate());
             String dateString = format.format(date);
             holder.binding.eventExpirationDate.setText(dateString);
@@ -43,6 +45,11 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             holder.binding.eventExpirationDate.setText("-");
         }
         holder.binding.eventName.setText(event.getTitle());
+        holder.binding.areaName.setText(event.getArea().getName());
+        if (event.getArea().getPhoto() != null){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(event.getArea().getPhoto(),0,event.getArea().getPhoto().length);
+            holder.binding.areaImage.setImageBitmap(bitmap);
+        }
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(event);

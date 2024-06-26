@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_gravity="right"
-    android:padding="8dp"
-    android:background="@color/green">
+    android:padding="4dp">
 
     <TextView
         android:id="@+id/tvMessageContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="3dp"
         android:text="Message content"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:background="@drawable/whatsapp_message_background"
+        android:textStyle="italic"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 </LinearLayout>

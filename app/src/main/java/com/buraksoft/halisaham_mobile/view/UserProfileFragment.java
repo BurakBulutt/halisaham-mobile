@@ -46,7 +46,6 @@ import java.util.Objects;
 public class UserProfileFragment extends Fragment {
     private FragmentUserProfileBinding binding;
     private AuthenticationViewModel viewModel;
-    private ProgressDialog progressDialog;
     private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<Intent> pickFromGalleryLauncher;
 
@@ -163,13 +162,9 @@ public class UserProfileFragment extends Fragment {
     private void observeDatas(){
         viewModel.getLoading().observe(getViewLifecycleOwner(),isLoading -> {
             if (isLoading){
-                progressDialog = new ProgressDialog(requireContext());
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                binding.progressbar.setVisibility(View.VISIBLE);
             }else{
-                if (progressDialog != null){
-                    progressDialog.dismiss();
-                }
+                binding.progressbar.setVisibility(View.GONE);
             }
         });
 
@@ -189,7 +184,6 @@ public class UserProfileFragment extends Fragment {
                 }
 
                 binding.emailText.setText(userProfileModel.getUserModel().getEmail());
-                binding.passwordText.setText(userProfileModel.getUserModel().getPassword());
                 binding.nameText.setText(userProfileModel.getUserModel().getName());
                 binding.surnameText.setText(userProfileModel.getUserModel().getSurname());
             }

@@ -171,6 +171,7 @@ public class EventViewModel extends ViewModel {
 
     public void saveEvent(EventRequest request) {
         loading.setValue(Boolean.TRUE);
+        error.postValue(Boolean.FALSE);
         disposable.add(eventService.createEvent(request)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -179,7 +180,7 @@ public class EventViewModel extends ViewModel {
                     public void onSuccess(Respond<EventModel> eventModelRespond) {
                         if (eventModelRespond.getMeta().getCode() == 200) {
                             singleEventData.setValue(eventModelRespond.getData());
-                            loading.postValue(Boolean.FALSE);
+                            loading.postValue(Boolean.TRUE);
                             error.postValue(Boolean.FALSE);
                         }
                     }
@@ -194,6 +195,7 @@ public class EventViewModel extends ViewModel {
 
     public void joinEvent(String eventId) {
         loading.setValue(Boolean.TRUE);
+        error.postValue(Boolean.FALSE);
         disposable.add(eventService.joinEvent(eventId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -201,22 +203,23 @@ public class EventViewModel extends ViewModel {
                     @Override
                     public void onSuccess(Respond<EventModel> eventModelRespond) {
                         if (eventModelRespond.getMeta().getCode() == 200) {
-                            loading.postValue(Boolean.FALSE);
+                            loading.postValue(Boolean.TRUE);
                             singleEventData.postValue(eventModelRespond.getData());
+                        }else if (eventModelRespond.getMeta().getCode() == 500){
+                            error.postValue(Boolean.TRUE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         loading.postValue(Boolean.FALSE);
-                        error.postValue(Boolean.FALSE);
+                        error.postValue(Boolean.TRUE);
                     }
                 }));
     }
 
     public void exitOnEvent(String id) {
         loading.postValue(Boolean.TRUE);
-        updateSuccess.setValue(Boolean.FALSE);
         error.postValue(Boolean.FALSE);
         disposable.add(eventService.exitEvent(id)
                 .subscribeOn(Schedulers.newThread())
@@ -226,12 +229,14 @@ public class EventViewModel extends ViewModel {
                     public void onSuccess(Respond<Void> voidRespond) {
                         loading.postValue(Boolean.FALSE);
                         if (voidRespond.getMeta().getCode() == 200) {
-                            success.postValue(Boolean.TRUE);
+                            updateSuccess.postValue(Boolean.TRUE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        loading.postValue(Boolean.FALSE);
+                        updateSuccess.postValue(Boolean.FALSE);
                         error.postValue(Boolean.TRUE);
                     }
                 }));
@@ -240,6 +245,7 @@ public class EventViewModel extends ViewModel {
     public void getUserProfileIdIn(List<String> userIds) {
         UserProfileBulkRequest request = new UserProfileBulkRequest(userIds);
         loading.postValue(Boolean.TRUE);
+        profileError.postValue(Boolean.FALSE);
         disposable.add(userProfileServiceAPI.getProfilesBulk(request)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -249,6 +255,7 @@ public class EventViewModel extends ViewModel {
                         loading.postValue(Boolean.FALSE);
                         if (dataResponseRespond.getMeta().getCode() == 200) {
                             userProfileData.setValue(dataResponseRespond.getData().getItems());
+                            profileError.postValue(Boolean.FALSE);
                         }
                     }
 
@@ -318,7 +325,6 @@ public class EventViewModel extends ViewModel {
                     @Override
                     public void onError(Throwable e) {
                         updateSuccess.postValue(Boolean.FALSE);
-
                     }
                 }));
     }
@@ -422,6 +428,10 @@ public class EventViewModel extends ViewModel {
 
     private <T> T fromJson(String json, Class<T> classOfT) {
         return new Gson().fromJson(json, classOfT);
+    }
+
+    public void setSingleDataDefault(){
+        singleEventData.postValue(null);
     }
 
     public LiveData<String> getChatId() {

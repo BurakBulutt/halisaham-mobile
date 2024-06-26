@@ -31,7 +31,6 @@ public class AuthenticationActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.navigation_matches) {
                 Intent intent = new Intent(getApplicationContext(), EventActivity.class);
                 startActivity(intent);
-                finish();
             }
 
             return true;
@@ -39,7 +38,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         binding.floatingActionButton.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
-            finish();
         });
     }
 

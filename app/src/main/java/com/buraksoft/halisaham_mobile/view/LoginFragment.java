@@ -31,7 +31,6 @@ public class LoginFragment extends Fragment {
     private static final int VERIFY_ERROR = 1052;
     private FragmentLoginBinding binding;
     private AuthenticationViewModel viewModel;
-    private ProgressDialog progressDialog;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -110,13 +109,9 @@ public class LoginFragment extends Fragment {
     private void observeDatas(){
         viewModel.getLoading().observe(getViewLifecycleOwner(),isLoading -> {
             if (isLoading){
-                progressDialog = new ProgressDialog(requireContext());
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                binding.progressbar.setVisibility(View.VISIBLE);
             }else{
-                if (progressDialog != null){
-                    progressDialog.dismiss();
-                }
+                binding.progressbar.setVisibility(View.GONE);
             }
         });
 
@@ -129,7 +124,8 @@ public class LoginFragment extends Fragment {
         viewModel.getTokenData().observe(getViewLifecycleOwner(),tokenModel -> {
             if (tokenModel != null){
                 Intent i = new Intent(requireContext(), MainActivity.class);
-                requireContext().startActivity(i);
+                requireActivity().startActivity(i);
+                requireActivity().finish();
             }
         });
 

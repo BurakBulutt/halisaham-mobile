@@ -1,6 +1,7 @@
 package com.buraksoft.halisaham_mobile.view;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
@@ -52,7 +54,9 @@ public class EventAddFragment extends Fragment {
     private final EventRequest request = new EventRequest();
     private FragmentEventAddBinding binding;
     private EventViewModel viewModel;
-    private Integer peopleCount;
+    private Integer peopleCount = 1;
+    private boolean spinnerLock = true;
+    private boolean isFragmentFirstLoad = true;
 
     public EventAddFragment() {
     }
@@ -81,8 +85,26 @@ public class EventAddFragment extends Fragment {
         binding.backButton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
+
+        binding.dateText.setInputType(android.text.InputType.TYPE_NULL);
+        binding.timeText.setInputType(android.text.InputType.TYPE_NULL);
+
+        binding.timeText.setOnClickListener(this::timeListener);
         binding.dateText.setOnClickListener(this::dateListener);
         binding.button.setOnClickListener(this::save);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isFragmentFirstLoad){
+            binding.citySpinner.setText("");
+            binding.districtSpinner.setText("");
+            binding.streetSpinner.setText("");
+            binding.areaSpinner.setText("");
+            binding.imageView.setImageResource(R.drawable._60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x);
+            initSpinners();
+        }
     }
 
     public void save(View view)  {
@@ -90,8 +112,9 @@ public class EventAddFragment extends Fragment {
         request.setDescription(binding.descriptionText.getText().toString());
 
         try {
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-            Date date = format.parse(binding.dateText.getText().toString());
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            String dateTime = binding.dateText.getText().toString() + " " + binding.timeText.getText().toString();
+            Date date = format.parse(dateTime);
             request.setExpirationDate(date.getTime());
         } catch (ParseException e) {
             request.setExpirationDate(null);
@@ -115,6 +138,21 @@ public class EventAddFragment extends Fragment {
             }
         }, year, month, day);
 
+        dialog.getDatePicker().setMinDate(c.getTimeInMillis());
+
+        dialog.show();
+    }
+
+    private void timeListener(View view) {
+        Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+
+        TimePickerDialog dialog = new TimePickerDialog(requireContext(), (view12, hourOfDay, minute1) -> {
+            String time = String.format("%02d:%02d", hourOfDay, minute1);
+            binding.timeText.setText(time);
+        }, hour, minute, true);
+
         dialog.show();
     }
 
@@ -131,36 +169,25 @@ public class EventAddFragment extends Fragment {
 
         cityNames.add(0, "-");
 
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, cityNames);
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, cityNames);
 
         binding.citySpinner.setAdapter(cityAdapter);
-        binding.citySpinner.setDropDownVerticalOffset(100);
 
-        binding.citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    binding.districtSpinner.setSelection(0);
-                    binding.streetSpinner.setSelection(0);
-                    binding.areaSpinner.setSelection(0);
-                    binding.districtSpinner.setEnabled(Boolean.FALSE);
-                    binding.streetSpinner.setEnabled(Boolean.FALSE);
-                    binding.areaSpinner.setEnabled(Boolean.FALSE);
-                } else {
-                    binding.districtSpinner.setEnabled(Boolean.TRUE);
-                    request.setCityId(cityModelList.get(position - 1).getId());
-                    initDistrict(cityModelList.get(position - 1));
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.districtSpinner.setEnabled(Boolean.FALSE);
-                binding.streetSpinner.setEnabled(Boolean.FALSE);
-                binding.areaSpinner.setEnabled(Boolean.FALSE);
+        binding.citySpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                binding.districtSpinner.setText("");
+                binding.streetSpinner.setText("");
+                binding.areaSpinner.setText("");
+                setSpinnerEnabled(binding.districtSpinner, false);
+                setSpinnerEnabled(binding.streetSpinner, false);
+                setSpinnerEnabled(binding.areaSpinner, false);
+            } else {
+                setSpinnerEnabled(binding.districtSpinner, true);
+                request.setCityId(cityModelList.get(position - 1).getId());
+                initDistrict(cityModelList.get(position - 1));
             }
         });
+
 
         final List<Integer> peopleCount = new ArrayList<>();
 
@@ -168,10 +195,14 @@ public class EventAddFragment extends Fragment {
             peopleCount.add(i);
         }
 
-        ArrayAdapter<Integer> countAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, peopleCount);
+        ArrayAdapter<Integer> countAdapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, peopleCount);
 
         binding.countSpinner.setAdapter(countAdapter);
-        binding.countSpinner.setDropDownVerticalOffset(100);
+
+        binding.countSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            setPeopleCount(peopleCount.get(position));
+            request.setMaxPeople(getPeopleCount());
+        });
 
         binding.countSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -196,31 +227,19 @@ public class EventAddFragment extends Fragment {
                 .collect(Collectors.toList());
         districtNames.add(0, "-");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, districtNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, districtNames);
 
         binding.districtSpinner.setAdapter(adapter);
-        binding.districtSpinner.setDropDownVerticalOffset(100);
 
-        binding.districtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == 0) {
-                    binding.streetSpinner.setSelection(0);
-                    binding.streetSpinner.setEnabled(Boolean.FALSE);
-                    binding.areaSpinner.setEnabled(Boolean.FALSE);
-                } else {
-                    binding.streetSpinner.setEnabled(Boolean.TRUE);
-                    request.setDistrictId(districtModelList.get(position - 1).getId());
-                    initStreet(districtModelList.get(position - 1));
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.streetSpinner.setEnabled(Boolean.FALSE);
-                binding.areaSpinner.setEnabled(Boolean.FALSE);
+        binding.districtSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                binding.streetSpinner.setText("");
+                setSpinnerEnabled(binding.streetSpinner, false);
+                setSpinnerEnabled(binding.areaSpinner, false);
+            } else {
+                setSpinnerEnabled(binding.streetSpinner, true);
+                request.setDistrictId(districtModelList.get(position - 1).getId());
+                initStreet(districtModelList.get(position - 1));
             }
         });
     }
@@ -233,37 +252,29 @@ public class EventAddFragment extends Fragment {
                 .collect(Collectors.toList());
         streetNames.add(0, "-");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, streetNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, streetNames);
 
         binding.streetSpinner.setAdapter(adapter);
-        binding.streetSpinner.setDropDownVerticalOffset(100);
 
-        binding.streetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    binding.areaSpinner.setSelection(0);
-                    binding.areaSpinner.setEnabled(Boolean.FALSE);
-                } else {
-                    Optional<StreetModel> streetModel = streetModelList.stream()
-                            .filter(streetModel1 -> streetModel1.getName().equals(streetNames.get(position)))
-                            .findFirst();
+        binding.streetSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                binding.areaSpinner.setText("");
+                setSpinnerEnabled(binding.areaSpinner, false);
+            } else {
+                Optional<StreetModel> streetModel = streetModelList.stream()
+                        .filter(streetModel1 -> streetModel1.getName().equals(streetNames.get(position)))
+                        .findFirst();
 
-                    if (!streetModel.isPresent()) {
-                        Toast.makeText(requireContext(), "MAHALLE BULUNAMADI", Toast.LENGTH_LONG).show();
-                        binding.areaSpinner.setSelection(0);
-                        binding.areaSpinner.setEnabled(Boolean.FALSE);
-                        return;
-                    }
-                    binding.areaSpinner.setEnabled(Boolean.TRUE);
-                    request.setStreetId(streetModel.get().getId());
-                    viewModel.getAreaByDistrictAndStreet(streetModel.get().getDistrictId(), streetModel.get().getId());
+                if (!streetModel.isPresent()) {
+                    Toast.makeText(requireContext(), "MAHALLE BULUNAMADI", Toast.LENGTH_LONG).show();
+                    binding.areaSpinner.setText("");
+                    setSpinnerEnabled(binding.areaSpinner, false);
+                    return;
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.areaSpinner.setEnabled(Boolean.FALSE);
+                setSpinnerEnabled(binding.areaSpinner, true);
+                request.setStreetId(streetModel.get().getId());
+                spinnerLock = true;
+                viewModel.getAreaByDistrictAndStreet(streetModel.get().getDistrictId(), streetModel.get().getId());
             }
         });
     }
@@ -274,37 +285,33 @@ public class EventAddFragment extends Fragment {
         List<String> areaNames = areaModelList.stream().map(AreaModel::getName).collect(Collectors.toList());
         areaNames.add(0, "-");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, areaNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, areaNames);
 
         binding.areaSpinner.setAdapter(adapter);
-        binding.streetSpinner.setDropDownVerticalOffset(100);
 
-        binding.areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    binding.imageView.setImageResource(R.drawable._60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x);
-                } else {
-                    Optional<AreaModel> areaModel = areaModelList.stream()
-                            .filter(areaModel1 -> areaModel1.getName().equals(areaNames.get(position)))
-                            .findFirst();
+        binding.areaSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position != 0) {
+                Optional<AreaModel> areaModel = areaModelList.stream()
+                        .filter(areaModel1 -> areaModel1.getName().equals(areaNames.get(position)))
+                        .findFirst();
 
-                    if (!areaModel.isPresent()) {
-                        return;
-                    }
-
-                    request.setAreaId(areaModel.get().getId());
+                areaModel.ifPresent(model -> {
+                    request.setAreaId(model.getId());
                     if (areaModel.get().getPhoto() != null){
                         Bitmap bitmap = BitmapFactory.decodeByteArray(areaModel.get().getPhoto(), 0, areaModel.get().getPhoto().length);
                         binding.imageView.setImageBitmap(bitmap);
                     }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                });
             }
         });
+    }
+
+    private void setSpinnerEnabled(AutoCompleteTextView spinner, boolean isEnabled) {
+        spinner.setEnabled(isEnabled);
+        spinner.setFocusable(isEnabled);
+        spinner.setFocusableInTouchMode(isEnabled);
+        spinner.setClickable(isEnabled);
+        spinner.setAlpha(isEnabled ? 1.0f : 0.5f); // Görsel olarak devre dışı bırakıldığını göstermek için opaklığı ayarlayabilirsiniz.
     }
 
 
@@ -312,18 +319,28 @@ public class EventAddFragment extends Fragment {
         viewModel.getCityData().observe(getViewLifecycleOwner(), cityModels -> {
             if (cityModels != null) {
                 initSpinners();
+                isFragmentFirstLoad = false;
             }
         });
 
         viewModel.getAreaData().observe(getViewLifecycleOwner(), areaModels -> {
-            if (areaModels != null) {
+            if (areaModels != null && spinnerLock) {
                 initAreaSpinner();
+                spinnerLock = false;
             }
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(),error -> {
             if (error){
                 //TODO
+            }
+        });
+
+        viewModel.getLoading().observe(getViewLifecycleOwner(),loading -> {
+            if (loading){
+                binding.progressbar.setVisibility(View.VISIBLE);
+            }else {
+                binding.progressbar.setVisibility(View.GONE);
             }
         });
 

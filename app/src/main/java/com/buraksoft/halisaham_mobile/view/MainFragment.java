@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.buraksoft.halisaham_mobile.R;
@@ -39,9 +40,10 @@ import java.util.stream.Collectors;
 
 public class MainFragment extends Fragment {
     private FragmentMainBinding binding;
-    private ProgressDialog progressDialog;
     private MainViewModel viewModel;
     private EventSearchRequest request;
+    private boolean isFragmentFirstLoad = true;
+    private boolean spinnerLock = false;
 
 
     public MainFragment() {
@@ -100,34 +102,22 @@ public class MainFragment extends Fragment {
 
         cityNames.add(0, "-");
 
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, cityNames);
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, cityNames);
 
         binding.citySpinner.setAdapter(cityAdapter);
-        binding.citySpinner.setDropDownVerticalOffset(100);
 
-        binding.citySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    binding.districtSpinner.setSelection(0);
-                    binding.streetSpinner.setSelection(0);
-                    binding.areaSpinner.setSelection(0);
-                    binding.districtSpinner.setEnabled(Boolean.FALSE);
-                    binding.streetSpinner.setEnabled(Boolean.FALSE);
-                    binding.areaSpinner.setEnabled(Boolean.FALSE);
-                } else {
-                    binding.districtSpinner.setEnabled(Boolean.TRUE);
-                    request.setCityId(cityModelList.get(position-1).getId());
-                    initDistrict(cityModelList.get(position - 1));
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.districtSpinner.setEnabled(Boolean.FALSE);
-                binding.streetSpinner.setEnabled(Boolean.FALSE);
-                binding.areaSpinner.setEnabled(Boolean.FALSE);
+        binding.citySpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                binding.districtSpinner.setText("");
+                binding.streetSpinner.setText("");
+                binding.areaSpinner.setText("");
+                setSpinnerEnabled(binding.districtSpinner, false);
+                setSpinnerEnabled(binding.streetSpinner, false);
+                setSpinnerEnabled(binding.areaSpinner, false);
+            } else {
+                setSpinnerEnabled(binding.districtSpinner, true);
+                request.setCityId(cityModelList.get(position - 1).getId());
+                initDistrict(cityModelList.get(position - 1));
             }
         });
     }
@@ -140,31 +130,19 @@ public class MainFragment extends Fragment {
                 .collect(Collectors.toList());
         districtNames.add(0, "-");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, districtNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, districtNames);
 
         binding.districtSpinner.setAdapter(adapter);
-        binding.districtSpinner.setDropDownVerticalOffset(100);
 
-        binding.districtSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == 0) {
-                    binding.streetSpinner.setSelection(0);
-                    binding.streetSpinner.setEnabled(Boolean.FALSE);
-                    binding.areaSpinner.setEnabled(Boolean.FALSE);
-                } else {
-                    binding.streetSpinner.setEnabled(Boolean.TRUE);
-                    request.setDistrictId(districtModelList.get(position-1).getId());
-                    initStreet(districtModelList.get(position - 1));
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.streetSpinner.setEnabled(Boolean.FALSE);
-                binding.areaSpinner.setEnabled(Boolean.FALSE);
+        binding.districtSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                binding.streetSpinner.setText("");
+                setSpinnerEnabled(binding.streetSpinner, false);
+                setSpinnerEnabled(binding.areaSpinner, false);
+            } else {
+                setSpinnerEnabled(binding.streetSpinner, true);
+                request.setDistrictId(districtModelList.get(position - 1).getId());
+                initStreet(districtModelList.get(position - 1));
             }
         });
     }
@@ -177,39 +155,30 @@ public class MainFragment extends Fragment {
                 .collect(Collectors.toList());
         streetNames.add(0, "-");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, streetNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, streetNames);
 
         binding.streetSpinner.setAdapter(adapter);
-        binding.streetSpinner.setDropDownVerticalOffset(100);
 
-        binding.streetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    binding.areaSpinner.setSelection(0);
-                    binding.areaSpinner.setEnabled(Boolean.FALSE);
-                } else {
-                    Optional<StreetModel> streetModel = streetModelList.stream()
-                            .filter(streetModel1 -> streetModel1.getName().equals(streetNames.get(position)))
-                            .findFirst();
+        binding.streetSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                binding.areaSpinner.setText("");
+                setSpinnerEnabled(binding.areaSpinner, false);
+            } else {
+                Optional<StreetModel> streetModel = streetModelList.stream()
+                        .filter(streetModel1 -> streetModel1.getName().equals(streetNames.get(position)))
+                        .findFirst();
 
-                    if (!streetModel.isPresent()) {
-                        Toast.makeText(requireContext(), "MAHALLE BULUNAMADI", Toast.LENGTH_LONG).show();
-                        binding.areaSpinner.setSelection(0);
-                        binding.areaSpinner.setEnabled(Boolean.FALSE);
-                        return;
-                    }
-                    binding.areaSpinner.setEnabled(Boolean.TRUE);
-                    request.setStreetId(streetModel.get().getId());
-                    viewModel.getAreaByDistrictAndStreet(streetModel.get().getDistrictId(), streetModel.get().getId());
+                if (!streetModel.isPresent()) {
+                    Toast.makeText(requireContext(), "MAHALLE BULUNAMADI", Toast.LENGTH_LONG).show();
+                    binding.areaSpinner.setText("");
+                    setSpinnerEnabled(binding.areaSpinner, false);
+                    return;
                 }
+                setSpinnerEnabled(binding.areaSpinner, true);
+                request.setStreetId(streetModel.get().getId());
+                spinnerLock = true;
+                viewModel.getAreaByDistrictAndStreet(streetModel.get().getDistrictId(), streetModel.get().getId());
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.areaSpinner.setEnabled(Boolean.FALSE);
-            }
-
         });
     }
 
@@ -219,57 +188,163 @@ public class MainFragment extends Fragment {
         List<String> areaNames = areaModelList.stream().map(AreaModel::getName).collect(Collectors.toList());
         areaNames.add(0, "-");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, areaNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.dropdown_item, areaNames);
 
         binding.areaSpinner.setAdapter(adapter);
-        binding.streetSpinner.setDropDownVerticalOffset(100);
 
-        binding.areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
+        binding.areaSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            if (position != 0) {
+                Optional<AreaModel> areaModel = areaModelList.stream()
+                        .filter(areaModel1 -> areaModel1.getName().equals(areaNames.get(position)))
+                        .findFirst();
 
-                } else {
-                    Optional<AreaModel> areaModel = areaModelList.stream()
-                            .filter(areaModel1 -> areaModel1.getName().equals(areaNames.get(position)))
-                            .findFirst();
-
-                    if (!areaModel.isPresent()) {
-                        return;
-                    }
-                    request.setAreaId(areaModel.get().getId());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //TODO
+                areaModel.ifPresent(model -> request.setAreaId(model.getId()));
             }
         });
+    }
+
+    private void setSpinnerEnabled(AutoCompleteTextView spinner, boolean isEnabled) {
+        spinner.setEnabled(isEnabled);
+        spinner.setFocusable(isEnabled);
+        spinner.setFocusableInTouchMode(isEnabled);
+        spinner.setClickable(isEnabled);
+        spinner.setAlpha(isEnabled ? 1.0f : 0.5f); // Görsel olarak devre dışı bırakıldığını göstermek için opaklığı ayarlayabilirsiniz.
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isFragmentFirstLoad){
+            binding.citySpinner.setText("");
+            binding.districtSpinner.setText("");
+            binding.streetSpinner.setText("");
+            binding.areaSpinner.setText("");
+            initSpinners();
+        }
+    }
+
+    private void updateRequestWithSpinnerValues() {
+        String selectedCity = binding.citySpinner.getText().toString();
+        if (!selectedCity.equals("-")) {
+            List<CityModel> cityModelList = viewModel.getCityData().getValue();
+            Optional<CityModel> cityModel = cityModelList.stream()
+                    .filter(city -> city.getName().equals(selectedCity))
+                    .findFirst();
+            cityModel.ifPresent(city -> {
+                request.setCityId(city.getId());
+                updateDistrictRequest(city);
+            });
+        }
+
+        String selectedDistrict = binding.districtSpinner.getText().toString();
+        if (!selectedDistrict.equals("-")) {
+            List<DistrictModel> districtModelList = viewModel.getCityData().getValue().stream()
+                    .filter(city -> city.getId().equals(request.getCityId()))
+                    .findFirst()
+                    .map(CityModel::getDistricts)
+                    .orElse(null);
+            if (districtModelList != null) {
+                Optional<DistrictModel> districtModel = districtModelList.stream()
+                        .filter(district -> district.getName().equals(selectedDistrict))
+                        .findFirst();
+                districtModel.ifPresent(district -> {
+                    request.setDistrictId(district.getId());
+                    updateStreetRequest(district);
+                });
+            }
+        }
+
+        String selectedStreet = binding.streetSpinner.getText().toString();
+        if (!selectedStreet.equals("-")) {
+            List<StreetModel> streetModelList = viewModel.getCityData().getValue().stream()
+                    .filter(city -> city.getId().equals(request.getCityId()))
+                    .findFirst()
+                    .map(CityModel::getDistricts)
+                    .orElse(null).stream()
+                    .filter(district -> district.getId().equals(request.getDistrictId()))
+                    .findFirst()
+                    .map(DistrictModel::getStreets)
+                    .orElse(null);
+            if (streetModelList != null) {
+                Optional<StreetModel> streetModel = streetModelList.stream()
+                        .filter(street -> street.getName().equals(selectedStreet))
+                        .findFirst();
+                streetModel.ifPresent(street -> {
+                    request.setStreetId(street.getId());
+                    updateAreaRequest(street);
+                });
+            }
+        }
+
+        String selectedArea = binding.areaSpinner.getText().toString();
+        if (!selectedArea.equals("-")) {
+            List<AreaModel> areaModelList = viewModel.getAreaData().getValue();
+            Optional<AreaModel> areaModel = areaModelList.stream()
+                    .filter(area -> area.getName().equals(selectedArea))
+                    .findFirst();
+            areaModel.ifPresent(area -> request.setAreaId(area.getId()));
+        }
+    }
+
+    private void updateDistrictRequest(CityModel cityModel) {
+        String selectedDistrict = binding.districtSpinner.getText().toString();
+        if (!selectedDistrict.equals("-")) {
+            List<DistrictModel> districtModelList = cityModel.getDistricts();
+            Optional<DistrictModel> districtModel = districtModelList.stream()
+                    .filter(district -> district.getName().equals(selectedDistrict))
+                    .findFirst();
+            districtModel.ifPresent(district -> {
+                request.setDistrictId(district.getId());
+                updateStreetRequest(district);
+            });
+        }
+    }
+
+    private void updateStreetRequest(DistrictModel districtModel) {
+        String selectedStreet = binding.streetSpinner.getText().toString();
+        if (!selectedStreet.equals("-")) {
+            List<StreetModel> streetModelList = districtModel.getStreets();
+            Optional<StreetModel> streetModel = streetModelList.stream()
+                    .filter(street -> street.getName().equals(selectedStreet))
+                    .findFirst();
+            streetModel.ifPresent(street -> {
+                request.setStreetId(street.getId());
+                updateAreaRequest(street);
+            });
+        }
+    }
+
+    private void updateAreaRequest(StreetModel streetModel) {
+        String selectedArea = binding.areaSpinner.getText().toString();
+        if (!selectedArea.equals("-")) {
+            List<AreaModel> areaModelList = viewModel.getAreaData().getValue();
+            Optional<AreaModel> areaModel = areaModelList.stream()
+                    .filter(area -> area.getName().equals(selectedArea))
+                    .findFirst();
+            areaModel.ifPresent(area -> request.setAreaId(area.getId()));
+        }
     }
 
     public void observeDatas(){
         viewModel.getCityData().observe(getViewLifecycleOwner(),cityModelList -> {
             if (cityModelList != null){
                 initSpinners();
+                isFragmentFirstLoad = false;
             }
         });
 
         viewModel.getAreaData().observe(getViewLifecycleOwner(),areaModelList -> {
-            if (areaModelList != null){
+            if (areaModelList != null && spinnerLock){
                 initAreaSpinner();
+                spinnerLock = false;
             }
         });
 
         viewModel.getLoading().observe(getViewLifecycleOwner(),loading -> {
             if (loading){
-                progressDialog = new ProgressDialog(requireContext());
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                binding.progressbar.setVisibility(View.VISIBLE);
             }else{
-                if (progressDialog != null){
-                    progressDialog.dismiss();
-                }
+                binding.progressbar.setVisibility(View.GONE);
             }
         });
 

@@ -1,6 +1,8 @@
 package com.buraksoft.halisaham_mobile.view;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +28,10 @@ import com.buraksoft.halisaham_mobile.viewmodel.AuthenticationViewModel;
 
 
 public class RegisterFragment extends Fragment {
+    private static final int VERIFY_ERROR = 1052;
+
     private FragmentRegisterBinding binding;
     private AuthenticationViewModel viewModel;
-    private ProgressDialog progressDialog;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -75,22 +79,55 @@ public class RegisterFragment extends Fragment {
                 viewModel.register(request);
 
             }else{
-                binding.informationText.setText("ONAYLAMAMISIN");
+                Toast.makeText(requireContext(),"Onay vermelisin",Toast.LENGTH_SHORT).show();
             }
 
+        }
+    }
+
+    private void alertCreator(Integer code){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(requireContext())
+                .setCancelable(Boolean.FALSE);
+
+        switch (code){
+            case 1051 :
+                alertDialog
+                        .setTitle("UYARI")
+                        .setMessage("E-posta veya parola hatalı lütfen bilgilerinizi kontrol edin")
+                        .setCancelable(Boolean.FALSE)
+                        .setPositiveButton("TAMAM", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                TokenContextHolder.setToken(null);
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
+            case 1052 :
+                alertDialog
+                        .setTitle("BİLGİ")
+                        .setMessage("Kaydınız başarıyla oluşturuldu lütfen e postanıza gönderilen bağlantı ile hesabınızı onaylayın.")
+                        .setCancelable(Boolean.FALSE)
+                        .setPositiveButton("TAMAM", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                TokenContextHolder.setToken(null);
+                                requireActivity().getSupportFragmentManager().popBackStackImmediate();
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
         }
     }
 
     private void observeDatas(){
         viewModel.getLoading().observe(getViewLifecycleOwner(),isLoading -> {
             if (isLoading){
-                progressDialog = new ProgressDialog(requireContext());
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
+                binding.progressbar.setVisibility(View.VISIBLE);
             }else{
-                if (progressDialog != null){
-                    progressDialog.dismiss();
-                }
+                binding.progressbar.setVisibility(View.GONE);
             }
         });
 
@@ -104,6 +141,12 @@ public class RegisterFragment extends Fragment {
             if (tokenModel != null){
                 Intent i = new Intent(requireContext(), MainActivity.class);
                 requireContext().startActivity(i);
+            }
+        });
+
+        viewModel.getVerifyError().observe(getViewLifecycleOwner(),verify -> {
+            if (verify){
+                alertCreator(VERIFY_ERROR);
             }
         });
     }

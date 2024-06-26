@@ -24,4 +24,11 @@
         <item name="android:fontFamily">@font/roboto_regular</item> <!-- Roboto fontunu kullanmak için -->
         <item name="android:gravity">center</item>
     </style>
+
+    <!-- Custom Dialog Theme -->
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/card_border</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:background">@drawable/card_border</item>
+    </style>
 </resources>

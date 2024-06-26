@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Query;
 
 public class EventServiceAPI {
-    private static final String BASE_URL = "http://10.0.2.2:8090/events/";
+    private static final String BASE_URL = "http://192.168.18.1:8090/events/";
 
     private EventService api;
 

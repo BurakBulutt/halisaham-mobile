@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".view.EventDialogFragment">
 
-
     <ImageView
         android:id="@+id/eventImage"
         android:layout_width="250dp"
@@ -16,82 +15,98 @@
         android:layout_margin="20dp"
         android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="Başlık"
-        android:textSize="14dp" />
-
-    <TextView
-        android:id="@+id/eventTitle"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="TextView"
-        android:textSize="20dp"/>
+        android:layout_margin="10dp"
+        app:boxCornerRadiusTopStart="10dp"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:startIconDrawable="@drawable/baseline_edit_24"
+        app:startIconTint="@color/green"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <TextView
-        android:id="@+id/DescriptionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:hint="Açıklama"
-        android:textSize="14dp" />
+        <EditText
+            android:id="@+id/eventTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Başlık"
+            android:textStyle="bold"
+            android:inputType="none"
+            android:enabled="false"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/eventDescription"
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="TextView"
-        android:textSize="18dp"/>
+        android:layout_margin="10dp"
+        app:boxCornerRadiusTopStart="10dp"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:startIconDrawable="@drawable/baseline_edit_24"
+        app:startIconTint="@color/green"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <TextView
-        android:id="@+id/areaText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:hint="Saha"
-        android:textSize="14dp" />
+        <EditText
+            android:id="@+id/eventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Açıklama"
+            android:textStyle="normal"
+            android:inputType="none"
+            android:enabled="false"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/eventArea"
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="TextView"
-        android:textSize="18dp"/>
+        android:layout_margin="10dp"
+        app:boxCornerRadiusTopStart="10dp"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:startIconDrawable="@drawable/baseline_place_24"
+        app:startIconTint="@color/green"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <TextView
-        android:id="@+id/personText"
+        <EditText
+            android:id="@+id/eventArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Saha"
+            android:textStyle="italic"
+            android:inputType="none"
+            android:enabled="false"
+            android:textColor="@color/black"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:hint="Kişi Sayısı"
-        android:textSize="14dp" />
+        app:boxCornerRadiusTopStart="10dp"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:startIconDrawable="@drawable/ic_account"
+        app:startIconTint="@color/green"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <TextView
-        android:id="@+id/eventPersonCountText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="TextView"
-        android:textSize="18dp"/>
+        <EditText
+            android:id="@+id/eventPersonCountText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="İsim"
+            android:textStyle="italic"
+            android:inputType="none"
+            android:enabled="false"
+            android:textColor="@color/black"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/joinEvent"

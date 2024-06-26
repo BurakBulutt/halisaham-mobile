@@ -25,7 +25,6 @@ public class EventActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.navigation_profile) {
                 Intent intent = new Intent(getApplicationContext(), AuthenticationActivity.class);
                 startActivity(intent);
-                finish();
             }
             return true;
         });
@@ -33,7 +32,6 @@ public class EventActivity extends AppCompatActivity {
         binding.floatingActionButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
-            finish();
         });
     }
 

@@ -1,6 +1,8 @@
 package com.buraksoft.halisaham_mobile.library.adapter;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -11,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.buraksoft.halisaham_mobile.databinding.SearchedEventRecyclerRowBinding;
 import com.buraksoft.halisaham_mobile.model.EventModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class SearchedEventRecyclerAdapter extends RecyclerView.Adapter<SearchedEventRecyclerAdapter.Holder> {
@@ -38,8 +42,20 @@ public class SearchedEventRecyclerAdapter extends RecyclerView.Adapter<SearchedE
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         EventModel event = events.get(position);
-        holder.binding.eventName.setText(events.get(position).getTitle());
-        //holder.binding.eventExpirationDate.setText(events.get(position).getExpirationDate().toString()); //TODO DATE DÜZELTİLİNCE AKTİF EDİLCEK.
+        if (event.getExpirationDate() != null){
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            Date date = new Date(event.getExpirationDate());
+            String dateString = format.format(date);
+            holder.binding.eventExpirationDate.setText(dateString);
+        }else{
+            holder.binding.eventExpirationDate.setText("-");
+        }
+        holder.binding.eventName.setText(event.getTitle());
+        holder.binding.areaName.setText(event.getArea().getName());
+        if (event.getArea().getPhoto() != null){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(event.getArea().getPhoto(),0,event.getArea().getPhoto().length);
+            holder.binding.areaImage.setImageBitmap(bitmap);
+        }
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(event);

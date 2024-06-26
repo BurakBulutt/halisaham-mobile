@@ -68,7 +68,7 @@ public class EventPageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentEventPageBinding.inflate(inflater,container,false);
+        binding = FragmentEventPageBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -76,7 +76,7 @@ public class EventPageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(EventViewModel.class);
-        if (eventModel != null){
+        if (eventModel != null) {
             initView(eventModel);
         }
         binding.updateButton.setOnClickListener(this::updateEvent);
@@ -85,15 +85,13 @@ public class EventPageFragment extends Fragment {
     }
 
     private void openText(View view) {
-
-        if (buttonLock.equals(Boolean.TRUE)){
+        if (buttonLock.equals(Boolean.TRUE)) {
             buttonLock = Boolean.FALSE;
             resetViews();
-        }else {
+        } else {
+            binding.eventDescription.setEnabled(Boolean.TRUE);
             binding.titleText.setFocusable(true);
-            binding.eventDescription.setFocusable(true);
             binding.titleText.setFocusableInTouchMode(true);
-            binding.eventDescription.setFocusableInTouchMode(true);
             binding.updateButton.setVisibility(View.VISIBLE);
             buttonLock = Boolean.TRUE;
         }
@@ -107,40 +105,37 @@ public class EventPageFragment extends Fragment {
         }
     }
 
-    private void updateEvent(View view){
+    private void updateEvent(View view) {
         EventRequest request = new EventRequest();
         request.setTitle(binding.titleText.getText().toString());
         request.setDescription(binding.eventDescription.getText().toString());
-        viewModel.updateEvent(toRequest(request,eventModel),eventModel.getId());
+        viewModel.updateEvent(toRequest(request, eventModel), eventModel.getId());
     }
 
-    private void resetViews(){
+    private void resetViews() {
         closeKeyboard();
         binding.eventDescription.setText(eventModel.getDescription());
         binding.titleText.setText(eventModel.getTitle());
+        binding.eventDescription.setEnabled(Boolean.FALSE);
         binding.titleText.setFocusableInTouchMode(false);
-        binding.eventDescription.setFocusableInTouchMode(false);
         binding.titleText.setFocusable(false);
-        binding.eventDescription.setFocusable(false);
         binding.updateButton.setVisibility(View.GONE);
     }
 
-    private void initView(EventModel eventModel){
+    private void initView(EventModel eventModel) {
         buttonLock = Boolean.FALSE;
+        binding.eventDescription.setEnabled(Boolean.FALSE);
         binding.titleText.setFocusable(false);
-        binding.eventDescription.setFocusable(false);
-        binding.emptyView.setVisibility(View.GONE);
-        binding.editDescriptionButton.setVisibility(View.GONE);
         binding.editTitleButton.setVisibility(View.GONE);
         binding.updateButton.setVisibility(View.GONE);
         binding.titleText.setText(eventModel.getTitle());
         binding.eventDescription.setText(eventModel.getDescription());
         binding.areaName.setText(eventModel.getArea().getName());
-        if (eventModel.getArea().getPhoto() != null){
+        if (eventModel.getArea().getPhoto() != null) {
             initAreaPhoto();
         }
         binding.userRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new UserRecylerAdapter(eventModel.getUsers(),eventModel);
+        adapter = new UserRecylerAdapter(eventModel.getUsers(), eventModel);
         adapter.setOnItemClickListener(new UserRecylerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String eventId, UserModel userModel) {
@@ -150,7 +145,7 @@ public class EventPageFragment extends Fragment {
                         .setPositiveButton("EVET", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                viewModel.deleteUserOnEvent(eventId,userModel.getId());
+                                viewModel.deleteUserOnEvent(eventId, userModel.getId());
                                 dialog.dismiss();
                             }
                         })
@@ -165,13 +160,13 @@ public class EventPageFragment extends Fragment {
         });
         binding.userRecyclerView.setAdapter(adapter);
         getUserPhotos(eventModel);
-        binding.backButton.setOnClickListener(v-> {
+        binding.backButton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
         binding.exitButton.setOnClickListener(this::getDialog);
     }
 
-    private void getUserPhotos(EventModel eventModel){
+    private void getUserPhotos(EventModel eventModel) {
         List<String> userIds = eventModel.getUsers().stream().map(UserModel::getId).collect(Collectors.toList());
         viewModel.getUserProfileIdIn(userIds);
         viewModel.getEventAuthority(eventModel.getId());
@@ -198,76 +193,63 @@ public class EventPageFragment extends Fragment {
                 .show();
     }
 
-    private void exitOnEvent(){
+    private void exitOnEvent() {
         viewModel.exitOnEvent(eventModel.getId());
     }
 
-    private void initAreaPhoto(){
+    private void initAreaPhoto() {
         try {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(eventModel.getArea().getPhoto(),0,eventModel.getArea().getPhoto().length);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(eventModel.getArea().getPhoto(), 0, eventModel.getArea().getPhoto().length);
             binding.imageView.setImageBitmap(bitmap);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("SAHA RESIMI YUKLENEMEDİ !", Objects.requireNonNull(e.getLocalizedMessage()));
         }
     }
 
-    private void observeDatas(){
-        viewModel.getSuccess().observe(getViewLifecycleOwner(),success -> {
-            if(success){
-                binding.progressbar.setVisibility(View.GONE);
-                NavController navController = Navigation.findNavController(requireView());
-                NavDirections action = EventPageFragmentDirections.actionEventPageFragmentToEventListFragment();
-                NavOptions navOptions = new NavOptions.Builder()
-                        .setPopUpTo(R.id.action_eventPageFragment_to_eventListFragment, true)
-                        .build();
-                navController.navigate(action,navOptions);
-            }
-        });
-
-        viewModel.getLoading().observe(getViewLifecycleOwner(),loading -> {
-            if (loading){
+    private void observeDatas() {
+        viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
+            if (loading) {
                 binding.progressbar.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.progressbar.setVisibility(View.GONE);
             }
         });
 
-        viewModel.getError().observe(getViewLifecycleOwner(),error -> {
-            if (error){
-                Toast.makeText(requireContext(),"BİLİNMEYEN HATA",Toast.LENGTH_LONG).show();
+        viewModel.getError().observe(getViewLifecycleOwner(), error -> {
+            if (error) {
+                Toast.makeText(requireContext(), "BİLİNMEYEN HATA", Toast.LENGTH_LONG).show();
                 requireActivity().finish();
             }
         });
 
-        viewModel.getUserProfileData().observe(getViewLifecycleOwner(),userProfileModelList -> {
-            if (userProfileModelList != null){
-                adapter.updateData(eventModel.getUsers(),userProfileModelList);
+        viewModel.getUserProfileData().observe(getViewLifecycleOwner(), userProfileModelList -> {
+            if (userProfileModelList != null) {
+                adapter.updateData(eventModel.getUsers(), userProfileModelList);
             }
         });
 
-        viewModel.getEventAuthortityView().observe(getViewLifecycleOwner(),bool -> {
-            if (bool != null){
+        viewModel.getEventAuthortityView().observe(getViewLifecycleOwner(), bool -> {
+            if (bool != null) {
                 adapter.updateView(bool);
             }
-            if (Boolean.TRUE.equals(bool)){
-                binding.editDescriptionButton.setVisibility(View.VISIBLE);
+            if (Boolean.TRUE.equals(bool)) {
                 binding.editTitleButton.setVisibility(View.VISIBLE);
-                binding.emptyView.setVisibility(View.INVISIBLE);
             }
         });
-        viewModel.getSingleEventData().observe(getViewLifecycleOwner(),updatedEvent -> {
-            if (updatedEvent != null){
+        viewModel.getSingleEventData().observe(getViewLifecycleOwner(), updatedEvent -> {
+            if (updatedEvent != null) {
                 eventModel = updatedEvent;
                 NavController navController = Navigation.findNavController(requireView());
                 EventPageFragmentDirections.ActionEventPageFragmentToEventChatFragment action = EventPageFragmentDirections.actionEventPageFragmentToEventChatFragment(eventModel);
                 NavOptions options = new NavOptions.Builder()
-                        .setPopUpTo(R.id.eventChatFragment,true)
+                        .setPopUpTo(R.id.eventChatFragment, true)
                         .build();
-                navController.navigate(action,options);
+                navController.navigate(action, options);
+                viewModel.setSingleDataDefault();
             }
         });
-        viewModel.getUpdateSuccess().observe(getViewLifecycleOwner(),success -> {
-            if (!success){
+        viewModel.getUpdateSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (!success) {
                 new AlertDialog.Builder(requireContext())
                         .setTitle("UYARI")
                         .setMessage("İşlem Başarısız.")
@@ -279,10 +261,17 @@ public class EventPageFragment extends Fragment {
                             }
                         })
                         .show();
+            } else {
+                NavController navController = Navigation.findNavController(requireView());
+                NavDirections action = EventPageFragmentDirections.actionEventPageFragmentToEventListFragment();
+                NavOptions options = new NavOptions.Builder()
+                        .setPopUpTo(R.id.eventListFragment, true)
+                        .build();
+                navController.navigate(action, options);
             }
         });
-        viewModel.getRemovedUser().observe(getViewLifecycleOwner(),removed -> {
-            if (removed != null){
+        viewModel.getRemovedUser().observe(getViewLifecycleOwner(), removed -> {
+            if (removed != null) {
                 eventModel.getUsers().stream()
                         .filter(user -> user.getId().equals(removed))
                         .findFirst()
@@ -295,7 +284,7 @@ public class EventPageFragment extends Fragment {
         });
     }
 
-    private EventRequest toRequest(EventRequest request,EventModel model){
+    private EventRequest toRequest(EventRequest request, EventModel model) {
         request.setAreaId(model.getArea().getId());
         request.setCityId(model.getCityId());
         request.setDistrictId(model.getDistrictId());

@@ -63,7 +63,8 @@ public class EventDialogFragment extends DialogFragment {
             }
             binding.eventTitle.setText(eventModel.getTitle());
             binding.eventDescription.setText(eventModel.getDescription());
-            binding.eventPersonCountText.setText(eventModel.getUsers().size() + "/" + eventModel.getMaxPeople());
+            int currentSize = eventModel.getUsers().size() - 1;
+            binding.eventPersonCountText.setText(currentSize + "/" + eventModel.getMaxPeople());
             binding.eventArea.setText(eventModel.getArea().getName());
             binding.joinEvent.setOnClickListener(this::joinEvent);
             observeDatas();
@@ -81,7 +82,7 @@ public class EventDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(requireActivity(), MainActivity.class);
                         requireActivity().startActivity(i);
-                        requireActivity().finish();;
+                        requireActivity().finish();
                     }
                 })
                 .setCancelable(Boolean.FALSE)
@@ -99,6 +100,12 @@ public class EventDialogFragment extends DialogFragment {
                 Intent i = new Intent(requireContext(), EventActivity.class);
                 requireActivity().startActivity(i);
                 requireActivity().finish();
+                viewModel.setSingleDataDefault();
+            }
+        });
+        viewModel.getError().observe(getViewLifecycleOwner(),error -> {
+            if (error){
+                alertDialog();
             }
         });
     }

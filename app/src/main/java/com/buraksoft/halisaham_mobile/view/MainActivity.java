@@ -24,16 +24,13 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 if (item.getItemId() == R.id.navigation_profile) {
                     Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
                     startActivity(intent);
-                    finish();
                     return true;
                 } else if (item.getItemId() == R.id.navigation_matches) {
                     Intent intent = new Intent(MainActivity.this, EventActivity.class);
                     startActivity(intent);
-                    finish();
                     return true;
                 }
                 return false;
