@@ -1,120 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/untitled_design__1_"
     tools:context=".view.EventDialogFragment">
 
-    <ImageView
-        android:id="@+id/eventImage"
-        android:layout_width="250dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
-
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:startIconDrawable="@drawable/baseline_edit_24"
-        app:startIconTint="@color/green"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <EditText
-            android:id="@+id/eventTitle"
+        <ImageView
+            android:id="@+id/eventImage"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Başlık"
-            android:textStyle="bold"
-            android:inputType="none"
-            android:enabled="false"
-            android:textColor="@color/black"/>
+            android:layout_margin="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:boxCornerRadiusBottomEnd="10dp"
+            app:startIconDrawable="@drawable/baseline_edit_24"
+            app:startIconTint="@color/green"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <EditText
+                android:id="@+id/eventTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Başlık"
+                android:textStyle="bold"
+                android:inputType="none"
+                android:enabled="false"
+                android:textColor="@color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:startIconDrawable="@drawable/baseline_edit_24"
-        app:startIconTint="@color/green"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <EditText
-            android:id="@+id/eventDescription"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Açıklama"
-            android:textStyle="normal"
-            android:inputType="none"
-            android:enabled="false"
-            android:textColor="@color/black"/>
+            android:layout_margin="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:boxCornerRadiusBottomEnd="10dp"
+            app:startIconDrawable="@drawable/baseline_edit_24"
+            app:startIconTint="@color/green"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <EditText
+                android:id="@+id/eventDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Açıklama"
+                android:textStyle="normal"
+                android:inputType="none"
+                android:enabled="false"
+                android:textColor="@color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:startIconDrawable="@drawable/baseline_place_24"
-        app:startIconTint="@color/green"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <EditText
-            android:id="@+id/eventArea"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Saha"
-            android:textStyle="italic"
-            android:inputType="none"
-            android:enabled="false"
-            android:textColor="@color/black"/>
+            android:layout_margin="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:boxCornerRadiusBottomEnd="10dp"
+            app:startIconDrawable="@drawable/baseline_place_24"
+            app:startIconTint="@color/green"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <EditText
+                android:id="@+id/eventArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Saha"
+                android:textStyle="italic"
+                android:inputType="none"
+                android:enabled="false"
+                android:textColor="@color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_gravity="center"
-        app:boxCornerRadiusTopStart="10dp"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:startIconDrawable="@drawable/ic_account"
-        app:startIconTint="@color/green"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_gravity="center"
+            app:boxCornerRadiusTopStart="10dp"
+            app:boxCornerRadiusBottomEnd="10dp"
+            app:startIconDrawable="@drawable/ic_account"
+            app:startIconTint="@color/green"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/eventPersonCountText"
+            <EditText
+                android:id="@+id/eventPersonCountText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="Kişi Sayısı"
+                android:textStyle="italic"
+                android:inputType="none"
+                android:enabled="false"
+                android:textColor="@color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/joinEvent"
+            android:backgroundTint="@color/green"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="İsim"
-            android:textStyle="italic"
-            android:inputType="none"
-            android:enabled="false"
-            android:textColor="@color/black"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/joinEvent"
-        android:backgroundTint="@color/green"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Katıl" />
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="Katıl" />
+    </LinearLayout>
 
 
-</LinearLayout>
+</ScrollView>

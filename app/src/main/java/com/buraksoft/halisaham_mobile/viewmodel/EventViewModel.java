@@ -48,7 +48,7 @@ public class EventViewModel extends ViewModel {
     private final UserProfileServiceAPI userProfileServiceAPI = new UserProfileServiceAPI();
     private final CompositeDisposable disposable = new CompositeDisposable();
     private StompClient stompClient;
-    private static final String WS_URL = "ws://10.0.2.2:8090/ws";
+    private static final String WS_URL = "ws://192.168.1.36:8090/ws";
 
     MutableLiveData<List<UserProfileModel>> userProfileData = new MutableLiveData<>();
     MutableLiveData<Boolean> profileError = new MutableLiveData<>();
@@ -341,12 +341,10 @@ public class EventViewModel extends ViewModel {
                             error.postValue(Boolean.FALSE);
                             chatId.postValue(chatModelRespond.getData().getId());
                             getMessagesChat(chatModelRespond.getData().getId());
-                            subscribeToChat();
                         } else {
                             error.postValue(Boolean.TRUE);
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         error.postValue(Boolean.TRUE);
@@ -364,6 +362,7 @@ public class EventViewModel extends ViewModel {
                     public void onNext(Respond<DataResponse<MessageModel>> dataResponseRespond) {
                         if (dataResponseRespond.getMeta().getCode() == 200) {
                             messages.postValue(dataResponseRespond.getData().getItems());
+                            subscribeToChat();
                         }
                     }
 
@@ -405,6 +404,9 @@ public class EventViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
                     MessageModel newMessage = fromJson(topicMessage.getPayload(), MessageModel.class);
+                    if (!newMessage.getChatId().equals(getChatId().getValue())){
+                        return;
+                    }
                     List<MessageModel> currentMessages = messages.getValue();
                     if (currentMessages != null) {
                         currentMessages.add(newMessage);

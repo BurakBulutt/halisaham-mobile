@@ -137,6 +137,7 @@ public class EventChatFragment extends Fragment {
                     binding.messageRecyclerView.scrollToPosition(messageModels.size()-1);
                 } else {
                     adapter.updateData(messageModels);
+                    binding.messageRecyclerView.scrollToPosition(adapter.getItemCount()-1);
                 }
             }
         });

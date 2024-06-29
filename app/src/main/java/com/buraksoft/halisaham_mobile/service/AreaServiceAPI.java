@@ -11,7 +11,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AreaServiceAPI {
-    private static final String BASE_URL = "http://192.168.18.1:8090/areas/";
+    private static final String BASE_URL = "http://192.168.1.36:8090/areas/";
     private AreaService api;
 
     public AreaServiceAPI() {

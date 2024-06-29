@@ -234,14 +234,14 @@
                 app:boxCornerRadiusBottomEnd="10dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/timeText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
                     android:textSize="18dp"
                     android:hint="Saat"
-                    android:inputType="time" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

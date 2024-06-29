@@ -73,6 +73,8 @@ public class EventAddFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentEventAddBinding.inflate(inflater, container, false);
+        binding.dateText.setInputType(android.text.InputType.TYPE_NULL);
+        binding.timeText.setInputType(android.text.InputType.TYPE_NULL);
         return binding.getRoot();
     }
 
@@ -85,9 +87,6 @@ public class EventAddFragment extends Fragment {
         binding.backButton.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
-
-        binding.dateText.setInputType(android.text.InputType.TYPE_NULL);
-        binding.timeText.setInputType(android.text.InputType.TYPE_NULL);
 
         binding.timeText.setOnClickListener(this::timeListener);
         binding.dateText.setOnClickListener(this::dateListener);
@@ -311,7 +310,7 @@ public class EventAddFragment extends Fragment {
         spinner.setFocusable(isEnabled);
         spinner.setFocusableInTouchMode(isEnabled);
         spinner.setClickable(isEnabled);
-        spinner.setAlpha(isEnabled ? 1.0f : 0.5f); // Görsel olarak devre dışı bırakıldığını göstermek için opaklığı ayarlayabilirsiniz.
+        spinner.setAlpha(isEnabled ? 1.0f : 0.5f);
     }
 
 
