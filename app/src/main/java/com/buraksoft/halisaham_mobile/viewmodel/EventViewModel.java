@@ -48,7 +48,7 @@ public class EventViewModel extends ViewModel {
     private final UserProfileServiceAPI userProfileServiceAPI = new UserProfileServiceAPI();
     private final CompositeDisposable disposable = new CompositeDisposable();
     private StompClient stompClient;
-    private static final String WS_URL = "ws://192.168.1.36:8090/ws";
+    private static final String WS_URL = "ws://192.168.1.39:8090/ws";
 
     MutableLiveData<List<UserProfileModel>> userProfileData = new MutableLiveData<>();
     MutableLiveData<Boolean> profileError = new MutableLiveData<>();

@@ -71,15 +71,23 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
+            <androidx.cardview.widget.CardView
+                android:layout_width="350dp"
+                android:layout_height="250dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:scaleType="centerCrop"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
+                android:layout_margin="30dp"
+                app:cardElevation="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/_60_f_215154625_hjg9qkfwh9cu6lctuc8tiuv6jqsi0c5x" />
+
+            </androidx.cardview.widget.CardView>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

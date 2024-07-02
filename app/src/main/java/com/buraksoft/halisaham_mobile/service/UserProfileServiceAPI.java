@@ -13,7 +13,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserProfileServiceAPI {
-    private static final String BASE_URL = "http://192.168.1.36:8090/user-profiles/";
+    private static final String BASE_URL = "http://192.168.1.39:8090/user-profiles/";
 
     private UserProfileService api;
 

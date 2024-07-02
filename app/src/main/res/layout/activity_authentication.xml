@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/untitled_design__1_"
+    android:background="@drawable/background"
     tools:context=".view.AuthenticationActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -27,9 +27,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
-                app:labelVisibilityMode="labeled"
                 android:background="@android:color/transparent"
-                app:menu="@menu/bottom_nav_menu"/>
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/bottom_nav_menu" />
 
 
         </com.google.android.material.bottomappbar.BottomAppBar>
@@ -40,19 +40,19 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
             android:src="@drawable/baseline_home_24"
-            app:tint="@color/green"
             app:layout_anchor="@id/bottomAppBar"
-            app:maxImageSize="40dp"/>
+            app:maxImageSize="40dp"
+            app:tint="@color/green" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:id="@+id/scrollView"

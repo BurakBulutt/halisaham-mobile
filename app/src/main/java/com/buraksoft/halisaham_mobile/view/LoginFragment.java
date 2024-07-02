@@ -117,7 +117,7 @@ public class LoginFragment extends Fragment {
 
         viewModel.getError().observe(getViewLifecycleOwner(),error -> {
             if (error){
-                Toast.makeText(requireContext(),"EMAIL VEYA SIFRE HATALI",Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(),"BAĞLANTI HATASI",Toast.LENGTH_LONG).show();
             }
         });
 

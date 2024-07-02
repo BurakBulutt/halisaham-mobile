@@ -48,6 +48,7 @@ public class EventDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentEventDialogBinding.inflate(inflater,container,false);
+        binding.backBtn.setOnClickListener(v -> dismiss());
         return binding.getRoot();
     }
 

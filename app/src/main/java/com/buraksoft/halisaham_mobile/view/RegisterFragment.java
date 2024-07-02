@@ -14,7 +14,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +57,8 @@ public class RegisterFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
         binding.registerButton.setOnClickListener(this::register);
         binding.loginText.setOnClickListener(this::navLogin);
+        binding.passwordText.addTextChangedListener(textWatcher());
+        binding.passwordAgainText.addTextChangedListener(textWatcher());
         observeDatas();
     }
 
@@ -83,6 +87,29 @@ public class RegisterFragment extends Fragment {
             }
 
         }
+    }
+
+    private TextWatcher textWatcher(){
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = binding.passwordText.getText().toString();
+                String passwordAgain = binding.passwordAgainText.getText().toString();
+
+                if (!password.equals(passwordAgain)) {
+                    binding.passwordAgainLayout.setError("Şifreler eşleşmiyor");
+                } else {
+                    binding.passwordAgainLayout.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+        return textWatcher;
     }
 
     private void alertCreator(Integer code){

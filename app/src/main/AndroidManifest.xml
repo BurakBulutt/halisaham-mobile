@@ -8,6 +8,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -22,22 +24,26 @@
         android:theme="@style/Theme.Halisahammobile"
         tools:targetApi="31">
         <activity
-            android:name=".view.EventActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false" />
-        <activity
-            android:name=".view.AuthenticationActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
-        <activity
-            android:name=".view.MainActivity"
-            android:windowSoftInputMode="adjustNothing"
+            android:name=".view.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.EventActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".view.AuthenticationActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".view.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing"/>
+
     </application>
 
 </manifest>

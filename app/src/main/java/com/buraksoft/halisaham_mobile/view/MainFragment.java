@@ -89,8 +89,23 @@ public class MainFragment extends Fragment {
                     .setCancelable(Boolean.FALSE)
                     .show();
         }else {
-            viewModel.getEvents(request);
+            if (checkRequest(request)){
+                viewModel.getEvents(request);
+            }
         }
+    }
+
+    private boolean checkRequest(EventSearchRequest request){
+        if (request.getCityId() == null || request.getCityId().equals("") || request.getCityId().equals("-")){
+            return false;
+        }
+        if (request.getDistrictId() == null || request.getDistrictId().equals("") || request.getDistrictId().equals("-")){
+            return false;
+        }
+        if (request.getStreetId() == null || request.getStreetId().equals("") || request.getStreetId().equals("-")){
+            return false;
+        }
+        return true;
     }
 
     public void initSpinners() {
@@ -352,7 +367,7 @@ public class MainFragment extends Fragment {
             if (error){
                 new AlertDialog.Builder(requireContext())
                         .setTitle("UYARI")
-                        .setMessage("Servis Devre Dışı")
+                        .setMessage("Servise Bağlanılamadı !")
                         .setCancelable(Boolean.FALSE)
                         .setNeutralButton("TAMAM", new DialogInterface.OnClickListener() {
                             @Override

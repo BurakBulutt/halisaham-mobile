@@ -10,12 +10,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -71,19 +73,37 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void selectImage(View view) {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED){
-            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES)){
-                Snackbar.make(view,"İzini Onaylıyor musun ? ", BaseTransientBottomBar.LENGTH_INDEFINITE)
-                        .setAction("İzin Iste", isGranted -> {
-                            permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
-                        })
-                        .show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED){
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES)){
+                    Snackbar.make(view,"İzini Onaylıyor musun ? ", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                            .setAction("İzin Iste", isGranted -> {
+                                permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+                            })
+                            .show();
+                }else {
+                    permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+                }
             }else {
-                permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
+                Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickFromGalleryLauncher.launch(intent);
             }
         }else {
-            Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickFromGalleryLauncher.launch(intent);
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    Snackbar.make(view, "Galeriye İzin Lazım", Snackbar.LENGTH_INDEFINITE).setAction("İzin Ver", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                        }
+                    }).show();
+                } else {
+                    permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
+            } else {
+                Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickFromGalleryLauncher.launch(intent);
+            }
         }
     }
 

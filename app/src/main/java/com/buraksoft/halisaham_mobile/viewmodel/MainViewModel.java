@@ -109,12 +109,14 @@ public class MainViewModel extends ViewModel {
     }
 
     public void getAreaByDistrictAndStreet(String district,String street){
+        loading.postValue(Boolean.TRUE);
         disposable.add(areaService.getByDistrictAndStreet(district,street)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<Respond<DataResponse<AreaModel>>>() {
                     @Override
                     public void onSuccess(Respond<DataResponse<AreaModel>> dataResponseRespond) {
+                        loading.postValue(Boolean.FALSE);
                         if (dataResponseRespond.getMeta().getCode() == 200){
                             areaData.postValue(dataResponseRespond.getData().getItems());
                         }
@@ -122,6 +124,7 @@ public class MainViewModel extends ViewModel {
 
                     @Override
                     public void onError(Throwable e) {
+                        loading.postValue(Boolean.FALSE);
                         error.postValue(Boolean.TRUE);
                     }
                 })
